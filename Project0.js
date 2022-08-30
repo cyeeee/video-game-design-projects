@@ -5,32 +5,21 @@ function setup() {
 function draw() {
   background(0);
   
-  //noStroke();
+  noStroke();
   
   //letter 'C'
   fill(255, 210, 40);
-  circle(200, 200, 150);  
-  fill(220); // same as background
-  circle(215, 195, 130);
+  circle(190, 200, 150);  
+  fill(0); // same as background
+  circle(202, 200, 130);
   
-  //leter 'W'
-  //stroke(100, 0, 0);
-  //strokeWeight(12);
+  //leter 'W' 
+  fill(127, 0, 255);  
+  quad(195, 170, 210, 170, 235, 245, 220, 245);
+  quad(245, 195, 250, 195, 235, 245, 230, 245);
+  quad(240, 195, 255, 195, 270, 245, 255, 245);
+  quad(290, 170, 295, 170, 270, 245, 265, 245);
   
-  //line(225, 210, 235, 240);
-  //line(235, 240, 245, 215);
-  //line(245, 215, 255, 240);
-  //line(255, 240, 265, 210);
-  
-  line(210, 205, 225, 245);
-  line(225, 245, 240, 215);
-  line(240, 215, 255, 245);
-  line(255, 245, 270, 205);
-  
-  //line(220, 200, 235, 240);
-  //line(235, 240, 250, 210);
-  //line(250, 210, 265, 240);
-  //line(265, 240, 280, 200);
   
   //animiation 
   //cloud 1
@@ -46,5 +35,9 @@ function draw() {
   ellipse(250, 140, 70, 60);
   ellipse(300, 145, 60, 35);
   
+
+  fill(255);
+  textSize(16);
+  text("C H E N Y I     W A N G", 115, 310);
   
 }
