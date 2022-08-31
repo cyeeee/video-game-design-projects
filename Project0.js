@@ -32,7 +32,7 @@ class LetterC {
 
 class LetterW {
   /*
-  The letter 'W' is formed by combining 4 quadrilaterals.
+  The letter 'W' is formed by combining 4 different sizes of quadrilaterals.
   The coordinate of this letter is set to be 
   the corrdinate of the first point of the left most quad.
   */
@@ -51,19 +51,64 @@ class LetterW {
   }
 }
 
+class Cloud {
+  /*
+  This class draws a could for animation.
+  The cloud is formed by combining 4 different sizes of ellipses.
+  The coordinate of the cloud is set to be 
+  the position of the very bottom ellipse.
+  */
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.width = 90;
+    this.height = 50;
+  }
+  
+  draw() {
+    noStroke();
+    fill(200, 240, 255, 230);   // light blue with transparancey of 230
+    ellipse(this.x, this.y, this.width, this.height);
+    ellipse(this.x-50, this.y-10, this.width-20, this.height-5);
+    ellipse(this.x-10, this.y-20, this.width-20, this.height+10);
+    ellipse(this.x+40, this.y-15, this.width-30, this.height-15);
+  }
+}
+
+class Subtitle {
+  /* 
+  This class displays a subtitle
+  */
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.size = 16;  // text size
+    this.str = "C H E N Y I     W A N G";  // content to display
+  }
+  
+  display() {
+    fill(255);  // white
+    textSize(this.size);
+    text(this.str, this.x, this.y);
+  }
+}
+
 var letterC;
 var letterW;
+var clouds = [];
+var subtitle;
 
 function setup() {
   createCanvas(400, 400);
   letterC = new LetterC(190, 200);
   letterW = new LetterW(195, 170);
+  clouds[0] = new Cloud(150, 240);
+  clouds[1] = new Cloud(260, 160);
+  subtitle = new Subtitle(115, 310);
 }
 
 function draw() {
   background(0);
-  
-  noStroke();
   
   //letter 'C'
   /*
@@ -85,8 +130,9 @@ function draw() {
   letterW.draw();
   
   
-  //animiation 
+  //animiation part
   //cloud 1
+  /*
   fill(200, 240, 255, 230);
   ellipse(150, 240, 90, 50);
   ellipse(100, 230, 70, 45);
@@ -98,10 +144,16 @@ function draw() {
   ellipse(210, 150, 70, 45);
   ellipse(250, 140, 70, 60);
   ellipse(300, 145, 60, 35);
+  */
+  for (var i = 0; i < clouds.length; i++) {
+    clouds[i].draw();
+  }
   
-
+  /*
   fill(255);
   textSize(16);
   text("C H E N Y I     W A N G", 115, 310);
+  */
+  subtitle.display();
   
 }
