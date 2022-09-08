@@ -34,6 +34,15 @@ class Ball {
       this.g = random(255);
       this.b = random(255);
     }
+    // catch by a paddle
+    if (this.y > 370) {
+      if (dist(this.x, 0, gun.x, 0) <= 45) {
+        this.yDir = -this.yDir;
+      }
+      else {
+        gameOver = 1;
+      }
+    }
   }
 }
 
@@ -85,7 +94,12 @@ class Bomb {
     if (this.y > 400) {
       this.dropped = 0;
     }
-    //todo (hit the gun)
+    if (this.y > 390) {
+      if (this.x > gun.x - 10 && this.x < gun.x + 10) {
+        gameOver = 1;
+      }
+    }
+    //todo (ball)
   }
 }
 
@@ -104,10 +118,10 @@ class Gun {
 
   move() {
     if (keyArray[LEFT_ARROW] === 1 && this.x >= 0) {
-      this.x--;
+      this.x -= 3;
     }
     if (keyArray[RIGHT_ARROW] === 1 && this.x <= (width-40)) {
-      this.x++;
+      this.x += 3;
     }
   }
 }
@@ -197,8 +211,9 @@ function setup() {
 }
 
 function draw() {
+  background(0);
+
   if (gameOver === false) {
-    background(0);
 
     ball.draw();
     ball.move();
@@ -222,6 +237,7 @@ function draw() {
 
     gun.draw();
     gun.move();
+
     checkFire();
     for (var i = 0; i < 5; i++) {
       if (bullets[i].fire === 1) {
@@ -229,5 +245,9 @@ function draw() {
       }
     }
   }
-  
+  else {
+    fill(255);
+    textFont('Courier New', 40);
+    text("GAME OVER", 80, 200);
+  } 
 }
