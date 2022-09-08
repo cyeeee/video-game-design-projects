@@ -3,8 +3,8 @@ class Ball {
     this.x = x;
     this.y = y;
     this.size = 20;
-    this.xDir = random(1, 3);
-    this.yDir = random(1, 3);
+    this.xDir = random(1, 2);
+    this.yDir = random(1, 2);
     //random color
     this.r = random(255);
     this.g = random(255);
@@ -41,10 +41,11 @@ class Invader {
   constructor(x, y) {
     this.x = x;
     this.y = y;
+    this.dead = 0;
   }
   
   draw() {
-    fill(0, 255, 255);
+    fill(150, 255, 255);  // light cyan
     noStroke();
     rect(this.x, this.y, 15, 7);
     rect(this.x-3, this.y+2, 21, 2);
@@ -59,6 +60,33 @@ class Invader {
     square(this.x+3, this.y+1, 2);
     square(this.x+10, this.y+1, 2);
   }
+
+  move() {
+    this.x += invDir;
+    if (this.x < 3 || this.x > 380) {
+      invDir = -invDir;
+      this.x += invDir;
+      lowerInvaders();  // bring all invaders down
+    }
+  }
+}
+
+class Bomb {
+  constructor() {
+    this.x = 0;
+    this.y = 0;
+    this.dropped = 0;
+  }
+
+  draw() {
+    fill(192, 192, 192);  // silver gray
+    circle(this.x, this.y, 5);
+    this.y++;
+    if (this.y > 400) {
+      this.dropped = 0;
+    }
+    //todo (hit the gun)
+  }
 }
 
 class Gun {
@@ -67,11 +95,11 @@ class Gun {
   }
 
   draw() {
-    fill(109, 113, 46); // green
+    fill(0, 150, 0); // green
     noStroke();
-    rect(this.x, 395, 40, 5);
-    rect(this.x+7, 385, 26, 10);
-    rect(this.x+17, 380, 6, 5);
+    rect(this.x-17, 395, 40, 5);
+    rect(this.x-10, 385, 26, 10);
+    rect(this.x, 380, 6, 5);
   }
 
   move() {
@@ -84,10 +112,42 @@ class Gun {
   }
 }
 
+class Bullet {
+  constructor() {
+    this.x = 0;
+    this.y = 0;
+    this.fire = 0;
+  }
+
+  draw() {
+    fill(255, 255, 100);  // light yellow
+    rect(this.x, this.y, 2, 6);
+    this.y -= 5;
+    if (this.y < 0) {
+      this.fire = 0;
+    }
+    for (var i = 0; i < invaders.length; i++) {
+      if (invaders[i].dead === 0 
+        && dist(this.x, this.y, invaders[i].x, invaders[i].y) < 10) {
+        invaders[i].dead = 1;
+        this.fire = 0;
+      }
+    }
+    //todo (shoot ball)
+  }
+}
+
+// global variables
+var gameOver = false;
 var ball;
 var gun;
-var invader;
+var invaders = [];
+var invDir = 0.75;
+var bombs = [];
+var bullets;
+var bulletIndex = 0;
 var keyArray = [];
+var currFrameCount = 0;
 
 function keyPressed() {
   keyArray[keyCode] = 1;
@@ -96,21 +156,78 @@ function keyReleased() {
   keyArray[keyCode] = 0;
 }
 
+function lowerInvaders() {
+  for (var i = 0; i < invaders.length; i++) {
+    invaders[i].y += 5;
+  }
+}
+
+function checkFire() {
+  if (keyArray[32] === 1) {
+    if (currFrameCount < frameCount - 10) {
+      currFrameCount = frameCount;
+      bullets[bulletIndex].fire = 1;
+      bullets[bulletIndex].x = gun.x+2;
+      bullets[bulletIndex].y = 380;
+      bulletIndex++;
+      if (bulletIndex > 4) {
+        bulletIndex = 0;
+      }
+    }
+  }
+}
+
 function setup() {
   createCanvas(400, 400);
   ball = new Ball(200, 200);
-  gun = new Gun(180);
-  invader = new Invader(200, 200);
+  gun = new Gun(200);
+  bullets = [new Bullet(), new Bullet(), new Bullet(), new Bullet(), new Bullet()];
+  // initialize invaders
+  var a = 80;
+  var b = 25;
+  for (var i = 0; i < 3; i++) {
+    for (var j = 0; j < 10; j++) {
+      invaders.push(new Invader(a, b));
+      bombs.push(new Bomb());
+      a += 27;
+    }
+    a = 80;
+    b += 25;
+  }
 }
 
 function draw() {
-  background(0);
+  if (gameOver === false) {
+    background(0);
 
-  ball.draw();
-  ball.move();
+    ball.draw();
+    ball.move();
 
-  invader.draw();
+    for (var i = 0; i < invaders.length; i++) {        
+      if (invaders[i].dead === 0) {
+        invaders[i].draw();
+        invaders[i].move();
+        if (bombs[i].dropped === 1) {
+          bombs[i].draw();
+        } 
+        else {
+          if (random(0, 10000) < 2) {
+            bombs[i].dropped = 1;
+            bombs[i].x = invaders[i].x;
+            bombs[i].y = invaders[i].y + 5;
+          }
+        }
+      }
+    }
 
-  gun.draw();
-  gun.move();
+    gun.draw();
+    gun.move();
+    checkFire();
+    for (var i = 0; i < 5; i++) {
+      if (bullets[i].fire === 1) {
+        bullets[i].draw();
+      }
+    }
+  }
+  
 }
