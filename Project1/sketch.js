@@ -1,3 +1,124 @@
+/*
+Project 1 - Invader Pong
+Author: Chenyi Wang
+Date: 09/08/2022
+
+This program combines space invaders with pong game.
+To start the game, just click anywhere on the the starting screen,
+(the logo animation can be skipped by doing that).
+The overall logic of space invaders game and the pong game is
+the same as the one provided in lectures.
+The ball will start out from the middle of the canvas with a random color,
+(could be the same color as the background...), and bounces off the borders, 
+(every time the ball bounces, its color will be changed).
+The gun also act like a paddle to catch the ball. 
+If the ball is shot, another ball will be spawned.
+If a ball touches an invader, the ball bounces.
+If a ball touches a bomb, the bomb disappears.
+There is no collicion between the balls.
+When all the invaders are gone, you win. A winning message will shown, 
+but you can keep play the pong till you miss the ball.
+When any bomb hits the gun, or any ball touches the bottom border, game over.
+A separate game over screen will then shown.
+*/
+
+// starting screen (logo from project0)
+class LetterC {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.size = 150;  // diameter of the solid circle
+  }
+  
+  draw() {
+    noStroke();
+    //draw a solid circle
+    fill(255, 210, 40);  // yellow
+    circle(this.x, this.y, this.size);
+    //draw a smaller circle
+    fill(0);  // same as the background color (black)
+    circle(this.x + 12, this.y, this.size - 20);
+  }
+  
+  move() {
+    // rise up the object, target position (190, 200)
+    if (this.y > 200) {
+      this.y--;  // move the object upwards
+    }
+  }
+}
+
+class LetterW {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.fade = 0;  // the value of transparency, initially fully transparent
+  }
+  
+  draw() {
+    noStroke();
+    fill(192, 192, 192, this.fade);  // silver gray
+    quad(this.x, this.y, this.x+15, this.y, this.x+40, this.y+75, this.x+25, this.y+75);
+    quad(this.x+50, this.y+25, this.x+55, this.y+25, this.x+40, this.y+75, this.x+35, this.y+75);
+    quad(this.x+45, this.y+25, this.x+60, this.y+25, this.x+75, this.y+75, this.x+60, this.y+75);
+    quad(this.x+95, this.y, 295, this.y, this.x+75, this.y+75, this.x+70, this.y+75);
+  }
+  
+  fadeIn() {
+    // slowly fade in the object till its color becomes solid
+    if (this.fade < 255) {
+      this.fade++;
+    }
+  }
+}
+
+class Cloud {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.width = 90;
+    this.height = 50;
+  }
+  
+  draw() {
+    noStroke();
+    fill(200, 240, 255, 230);   // light blue, with transparencey of 230
+    ellipse(this.x, this.y, this.width, this.height);
+    ellipse(this.x-50, this.y-10, this.width-20, this.height-5);
+    ellipse(this.x-10, this.y-20, this.width-20, this.height+10);
+    ellipse(this.x+40, this.y-15, this.width-30, this.height-15);
+  }
+  
+  move() {
+    // move out the object
+    this.x++;  // move to the right
+  }
+}
+
+class Subtitle {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.fade = 0;
+    this.size = 16;  // text size
+    this.font = 'Georgia';  // text font
+    this.str = "Click anywhere to start";  // content to display
+  }
+  
+  display() {
+    fill(255, this.fade);  // white
+    textFont(this.font, this.size);
+    text(this.str, this.x, this.y);
+  }
+
+  fadeIn() {
+    if (this.fade < 255) {
+      this.fade += 10;
+    }
+  }
+}
+
+// game screen
 class Ball {
   constructor(x, y) {
     this.x = x;
@@ -35,26 +156,33 @@ class Ball {
       this.g = random(255);
       this.b = random(255);
     }
-    // catch by a paddle(gun)
+    // caught by a paddle(gun)
     if (this.y > 370) {
       if (dist(this.x, 0, gun.x, 0) < 38) {
         this.yDir = -this.yDir;
+        this.r = random(255);
+        this.g = random(255);
+        this.b = random(255);
       }
       else {
         gameOver = 1;
       }
     }
     // bounce when touch a invader
-    /* for (var i = 0; i < invaders.length; i++) {
-      if (invaders[i].dead === 0 
+    for (var i = 0; i < invaders.length; i++) {
+      if (invaders[i].dead === 0
         && dist(this.x, this.y, invaders[i].x, invaders[i].y) < 27) {
-          //this.xDir = -this.xDir;
+        if (this.y > invaders[i].y+20 || this.y < invaders[i].y-20) {
           this.yDir = -this.yDir;
-          this.r = random(255);
-          this.g = random(255);
-          this.b = random(255);
+        }
+        else {
+           this.xDir = -this.xDir;
+        }
+        this.r = random(255);
+        this.g = random(255);
+        this.b = random(255);
       }
-    }   */  
+    }   
   }
 }
 
@@ -119,7 +247,6 @@ class Bomb {
         this.valid = 1;
       }
     }
-    
   }
 }
 
@@ -137,6 +264,7 @@ class Gun {
   }
 
   move() {
+    // cannot move off the canvas
     if (keyArray[LEFT_ARROW] === 1 && this.x >= 17) {
       this.x -= 3;
     }
@@ -178,7 +306,13 @@ class Bullet {
 }
 
 // global variables
+var letterC;
+var letterW;
+var clouds = [];
+var subtitle;
+var start = false;
 var gameOver = false;
+var win = false;
 var balls = [];
 var gun;
 var invaders = [];
@@ -189,6 +323,9 @@ var bulletIndex = 0;
 var keyArray = [];
 var currFrameCount = 0;
 
+function mouseClicked() {
+  start = true;
+}
 function keyPressed() {
   keyArray[keyCode] = 1;
 }
@@ -219,6 +356,15 @@ function checkFire() {
 
 function setup() {
   createCanvas(400, 400);
+
+  // starting screen
+  letterC = new LetterC(190, 500);  // initially locate outside of the canvas
+  letterW = new LetterW(195, 170);
+  clouds[0] = new Cloud(150, 240);
+  clouds[1] = new Cloud(260, 160);
+  subtitle = new Subtitle(115, 330);  // initially locate outside of the canvas
+
+  // game screen
   balls[0] = new Ball(200, 200);
   gun = new Gun(200);
   bullets = [new Bullet(), new Bullet(), new Bullet(), new Bullet(), new Bullet()];
@@ -237,47 +383,78 @@ function setup() {
 }
 
 function draw() {
-  background(0);
+  background(0);  // black
 
-  if (gameOver === false) {
-    
-    for (var i = 0; i < balls.length; i++) {
-      balls[i].draw();
-      balls[i].move();
+  if (start === false) {
+    letterC.draw();
+    letterC.move();
+    letterW.draw();
+    if (clouds[1].x > width) {
+      letterW.fadeIn();  
     }
+    for (var i = 0; i < clouds.length; i++) {
+      clouds[i].draw();
+      if (letterC.y == 200) {
+        clouds[i].move();
+      }
+    }  
+    subtitle.display();
+    if (letterW.fade == 255) {
+      subtitle.fadeIn();
+    }
+  } 
 
-    for (var i = 0; i < invaders.length; i++) {        
-      if (invaders[i].dead === 0) {
-        invaders[i].draw();
-        invaders[i].move();
-        if (bombs[i].dropped === 1 && bombs[i].valid === 0) {
-          bombs[i].draw();
-        } 
-        else {
-          if (random(0, 10000) < 2) {
-            bombs[i].dropped = 1;
-            bombs[i].x = invaders[i].x;
-            bombs[i].y = invaders[i].y + 5;
+  else {
+    if (gameOver === false) {
+    
+      for (var i = 0; i < balls.length; i++) {
+        balls[i].draw();
+        balls[i].move();
+      }
+      
+      win = true;
+      for (var i = 0; i < invaders.length; i++) {        
+        if (invaders[i].dead === 0) {
+          win = false;
+          invaders[i].draw();
+          invaders[i].move();
+          if (bombs[i].dropped === 1 && bombs[i].valid === 0) {
+            bombs[i].draw();
+          } 
+          else {
+            if (random(0, 10000) < 2) {
+              bombs[i].dropped = 1;
+              bombs[i].x = invaders[i].x;
+              bombs[i].y = invaders[i].y + 5;
+            }
           }
         }
       }
-    }
+  
+      gun.draw();
+      gun.move();
+  
+      checkFire();
+      for (var i = 0; i < 5; i++) {
+        if (bullets[i].fire === 1) {
+          bullets[i].draw(); 
+        }
+      }
 
-    gun.draw();
-    gun.move();
-
-    checkFire();
-    for (var i = 0; i < 5; i++) {
-      if (bullets[i].fire === 1) {
-        bullets[i].draw(); 
+      if (win === true) {
+        fill(255);
+        textStyle(BOLD);
+        textFont('Courier New', 40);
+        text("YOU WIN!", 100, 200);
       }
     }
+  
+    else {
+      fill(255);
+      textStyle(BOLD);
+      textFont('Courier New', 40);
+      text("GAME OVER", 80, 200);
+    } 
   }
-
-  else {
-    fill(255);
-    textStyle(BOLD);
-    textFont('Courier New', 40);
-    text("GAME OVER", 80, 200);
-  } 
+  
 }
