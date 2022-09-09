@@ -35,7 +35,7 @@ class Ball {
       this.g = random(255);
       this.b = random(255);
     }
-    // catch by a paddle
+    // catch by a paddle(gun)
     if (this.y > 370) {
       if (dist(this.x, 0, gun.x, 0) < 38) {
         this.yDir = -this.yDir;
@@ -167,6 +167,13 @@ class Bullet {
         this.fire = 0;
       }
     }
+    // If the ball is shot, spawn another ball
+    for (var i = 0; i < balls.length; i++) {
+      if (dist(this.x, this.y, balls[i].x, balls[i].y) < 10) {
+        balls.push(new Ball(200, 200));
+        this.fire = 0;
+      }
+    }
   }
 }
 
@@ -262,14 +269,7 @@ function draw() {
     checkFire();
     for (var i = 0; i < 5; i++) {
       if (bullets[i].fire === 1) {
-        bullets[i].draw();
-        /* for (var j = 0; j < balls.length; j++) {
-          if (dist(bullets[i].x, bullets[i].y, balls[j].x, balls[j].y) < 10) {
-            //balls.push(new Ball(200, 200));
-            balls[length+1] = new Ball(200, 200);
-            break;
-          }
-        } */
+        bullets[i].draw(); 
       }
     }
   }
