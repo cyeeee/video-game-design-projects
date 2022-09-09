@@ -20,6 +20,7 @@ class Ball {
   move() {
     this.x += this.xDir;
     this.y += this.yDir;
+    // bounce off the borders
     if (this.x >= (width - 10) || this.x < 10) {
       this.xDir = -this.xDir; 
       //change color when hit the boundaries
@@ -36,13 +37,24 @@ class Ball {
     }
     // catch by a paddle
     if (this.y > 370) {
-      if (dist(this.x, 0, gun.x, 0) <= 45) {
+      if (dist(this.x, 0, gun.x, 0) < 38) {
         this.yDir = -this.yDir;
       }
       else {
         gameOver = 1;
       }
     }
+    // bounce when touch a invader
+    /* for (var i = 0; i < invaders.length; i++) {
+      if (invaders[i].dead === 0 
+        && dist(this.x, this.y, invaders[i].x, invaders[i].y) < 27) {
+          //this.xDir = -this.xDir;
+          this.yDir = -this.yDir;
+          this.r = random(255);
+          this.g = random(255);
+          this.b = random(255);
+      }
+    }   */  
   }
 }
 
@@ -85,6 +97,7 @@ class Bomb {
     this.x = 0;
     this.y = 0;
     this.dropped = 0;
+    this.valid = 0;
   }
 
   draw() {
@@ -99,7 +112,14 @@ class Bomb {
         gameOver = 1;
       }
     }
-    //todo (ball)
+    // disappear when touches a ball
+    for (var i = 0; i < balls.length; i++) {
+      if (this.x > balls[i].x - 8 && this.x < balls[i].x + 8 
+        && this.y > balls[i].y - 8 && this.y < balls[i].y + 8){
+        this.valid = 1;
+      }
+    }
+    
   }
 }
 
@@ -117,10 +137,10 @@ class Gun {
   }
 
   move() {
-    if (keyArray[LEFT_ARROW] === 1 && this.x >= 0) {
+    if (keyArray[LEFT_ARROW] === 1 && this.x >= 17) {
       this.x -= 3;
     }
-    if (keyArray[RIGHT_ARROW] === 1 && this.x <= (width-40)) {
+    if (keyArray[RIGHT_ARROW] === 1 && this.x <= (width-23)) {
       this.x += 3;
     }
   }
@@ -142,18 +162,17 @@ class Bullet {
     }
     for (var i = 0; i < invaders.length; i++) {
       if (invaders[i].dead === 0 
-        && dist(this.x, this.y, invaders[i].x, invaders[i].y) < 10) {
+        && dist(this.x, this.y, invaders[i].x, invaders[i].y) < 12) {
         invaders[i].dead = 1;
         this.fire = 0;
       }
     }
-    //todo (shoot ball)
   }
 }
 
 // global variables
 var gameOver = false;
-var ball;
+var balls = [];
 var gun;
 var invaders = [];
 var invDir = 0.75;
@@ -193,7 +212,7 @@ function checkFire() {
 
 function setup() {
   createCanvas(400, 400);
-  ball = new Ball(200, 200);
+  balls[0] = new Ball(200, 200);
   gun = new Gun(200);
   bullets = [new Bullet(), new Bullet(), new Bullet(), new Bullet(), new Bullet()];
   // initialize invaders
@@ -214,15 +233,17 @@ function draw() {
   background(0);
 
   if (gameOver === false) {
-
-    ball.draw();
-    ball.move();
+    
+    for (var i = 0; i < balls.length; i++) {
+      balls[i].draw();
+      balls[i].move();
+    }
 
     for (var i = 0; i < invaders.length; i++) {        
       if (invaders[i].dead === 0) {
         invaders[i].draw();
         invaders[i].move();
-        if (bombs[i].dropped === 1) {
+        if (bombs[i].dropped === 1 && bombs[i].valid === 0) {
           bombs[i].draw();
         } 
         else {
@@ -242,11 +263,20 @@ function draw() {
     for (var i = 0; i < 5; i++) {
       if (bullets[i].fire === 1) {
         bullets[i].draw();
+        /* for (var j = 0; j < balls.length; j++) {
+          if (dist(bullets[i].x, bullets[i].y, balls[j].x, balls[j].y) < 10) {
+            //balls.push(new Ball(200, 200));
+            balls[length+1] = new Ball(200, 200);
+            break;
+          }
+        } */
       }
     }
   }
+
   else {
     fill(255);
+    textStyle(BOLD);
     textFont('Courier New', 40);
     text("GAME OVER", 80, 200);
   } 
