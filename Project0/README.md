@@ -1,4 +1,4 @@
-#Project 0 - Logo Animation
+# Project 0 - Logo Animation
 
 This is a warm-up programming exercise to draw something in p5js. In this project, you are asked to:
 
