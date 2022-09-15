@@ -63,6 +63,16 @@ class prizeObj {
   constructor(x, y) {
     this.x = x;
     this.y = y;
+    this.collected = false;
+  }
+
+  draw() {
+    image(objects[0], this.x, this.y, 20, 20);
+  }
+
+  remove() {
+    fill(255);  // same as background color
+    square(this.x, this.y, 20);
   }
 }
 
@@ -70,6 +80,10 @@ class rockObj {
   constructor(x, y) {
     this.x = x;
     this.y = y;
+  }
+
+  draw() {
+    image(objects[1], this.x, this.y, 20, 20);
   }
 }
 
@@ -109,6 +123,12 @@ class mainCharObj {
     }
     else if (this.y > 800) {
       this.y = 800;
+    }
+    // the prizes are collected when the main character touches it
+    for (var i = 0; i < game.prizes.length; i++) {
+      if (dist(this.x, this.y, game.prizes[i].x, game.prizes[i].y) < 15) {
+        game.prizes[i].collected = true;
+      }
     }
     // bounce back a little when bumping into a rock
   }
@@ -241,6 +261,12 @@ function draw() {
 
   game.initialize();
   game.drawBackground(); 
+
+  for (var i = 0; i < game.prizes.length; i++) {
+    if (game.prizes[i].collected === true) {
+      game.prizes[i].remove();
+    }
+  }
   
   mainChar.draw();
   mainChar.move();
