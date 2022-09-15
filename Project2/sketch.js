@@ -80,23 +80,22 @@ class mainCharObj {
   }
 
   draw() {
-    //todo
     image(objects[2], this.x, this.y, 20, 20);
   }
 
   move() {
     // The main character moves with the arrow keys.
     if (keyIsDown(LEFT_ARROW)) {
-      this.x -= 3;
+      this.x -= 2;
     }
     else if (keyIsDown(RIGHT_ARROW)) {
-      this.x += 3;
+      this.x += 2;
     }
     else if (keyIsDown(UP_ARROW)) {
-      this.y -= 3;
+      this.y -= 2;
     }
     else if (keyIsDown(DOWN_ARROW)) {
-      this.y += 3;
+      this.y += 2;
     }
     // stay inside the tilemap
     if (this.x < 0) {
@@ -119,12 +118,11 @@ class enemyObj {
   constructor(x, y) {
     this.x = x;
     this.y = y;
-    this.xDir = random(-0.5, 0.5);
-    this.yDir = random(-0.5, 0.5);
+    this.xDir = random(-0.2, 0.2);
+    this.yDir = random(-0.2, 0.2);
   }
 
   draw() {
-    //todo
     image(objects[3], this.x, this.y, 20, 20);
   }
 
@@ -222,14 +220,19 @@ class gameObj {
 }
 
 var mainChar;
-var enemies;
+var enemies = [];
 var game;
 
 function setup() {
   createCanvas(400, 400);
   customChar();
   mainChar = new mainCharObj(100, 100);
-  enemies = new enemyObj(200, 200);
+  enemies[0] = new enemyObj(480, 300);
+  enemies[1] = new enemyObj(680, 420);
+  enemies[2] = new enemyObj(360, 500);
+  enemies[3] = new enemyObj(460, 720);
+  enemies[4] = new enemyObj(460, 120);
+  enemies[5] = new enemyObj(80, 260);
   game = new gameObj();
 }
 
@@ -242,7 +245,9 @@ function draw() {
   mainChar.draw();
   mainChar.move();
   
-  enemies.draw();
-  enemies.move();
+  for (var i = 0; i < enemies.length; i++) {
+    enemies[i].draw();
+    enemies[i].move();
+  }
   
 }
