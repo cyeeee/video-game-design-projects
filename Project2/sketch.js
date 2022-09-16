@@ -9,12 +9,12 @@ var objects = [];
 
 function customChar() {
   // prize
-  fill(255);
+  fill(200, 255, 200);
   rect(0, 0, 400, 400);
   noStroke();
   fill(230, 180, 0);
   arc(200, 75, 280, 280, 0, PI, CHORD);
-  fill(255);
+  fill(200, 255, 200); // same as background color
   arc(200, 85, 250, 250, 0, PI, CHORD);
   fill(230, 180, 0);
   rect(175, 250, 50, 70);
@@ -31,7 +31,7 @@ function customChar() {
   objects.push(get(0, 0, width, height));
 
   // rock
-  fill(255);
+  fill(200, 255, 200);
   rect(0, 0, 400, 400);
   noStroke();
   fill(150);
@@ -42,19 +42,30 @@ function customChar() {
   objects.push(get(0, 0, width, height));
 
   // main character
-  fill(255);
+  fill(200, 255, 200);
   rect(0, 0, 400, 400);
-  //todo
+  noStroke();
   fill(0);
-  circle(200, 200, 300);
+  triangle(200, 200, 300, 380, 100, 380);
+  circle(200, 130, 220);
+  fill(255);
+  ellipse(150, 130, 20, 50);
+  ellipse(250, 130, 20, 50);
   objects.push(get(0, 0, width, height));
 
   // enemy
-  fill(255);
+  fill(200, 255, 200);
   rect(0, 0, 400, 400);
-  //todo
+  noStroke();
   fill(255, 0, 0);
-  circle(200, 200, 300);
+  triangle(200, 200, 300, 380, 100, 380);
+  circle(200, 130, 220);
+  rect(250, 300, 30, 5);
+  fill(0);
+  arc(150, 130, 70, 70, 0, PI + QUARTER_PI, CHORD);
+  arc(250, 130, 70, 70, 0 - QUARTER_PI, PI, CHORD);
+  triangle(280, 230, 290, 290, 270, 290);
+  rect(278, 290, 5, 80);
   objects.push(get(0, 0, width, height));
 
 }
@@ -71,7 +82,7 @@ class prizeObj {
   }
 
   remove() {
-    fill(255);  // same as background color
+    fill(200, 255, 200);  // same as background color
     square(this.x, this.y, 20);
   }
 }
@@ -146,6 +157,7 @@ class enemyObj {
     image(objects[3], this.x, this.y, 20, 20);
   }
 
+  /*
   move() {
     // the enemies wander around
     this.x += this.xDir;
@@ -162,6 +174,7 @@ class enemyObj {
     // bounce back a little when bumping into a rock
 
   }
+  */
 }
 
 class gameObj {
@@ -247,17 +260,19 @@ function setup() {
   createCanvas(400, 400);
   customChar();
   mainChar = new mainCharObj(100, 100);
+
   enemies[0] = new enemyObj(480, 300);
   enemies[1] = new enemyObj(680, 420);
   enemies[2] = new enemyObj(360, 500);
   enemies[3] = new enemyObj(460, 720);
   enemies[4] = new enemyObj(460, 120);
   enemies[5] = new enemyObj(80, 260);
+
   game = new gameObj();
 }
 
 function draw() {
-  background(255);
+  background(200, 255, 200);  // light green
 
   game.initialize();
   game.drawBackground(); 
@@ -273,7 +288,7 @@ function draw() {
   
   for (var i = 0; i < enemies.length; i++) {
     enemies[i].draw();
-    enemies[i].move();
+    //enemies[i].move();
   }
   
 }
