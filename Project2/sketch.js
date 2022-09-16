@@ -68,6 +68,11 @@ function customChar() {
   rect(278, 290, 5, 80);
   objects.push(get(0, 0, width, height));
 
+  // border
+  fill(255);
+  rect(0, 0, 400, 400);
+  objects.push(get(0, 0, width, height));
+
 }
 
 class prizeObj {
@@ -113,13 +118,13 @@ class mainCharObj {
     if (keyIsDown(LEFT_ARROW)) {
       this.x -= 2;
     }
-    else if (keyIsDown(RIGHT_ARROW)) {
+    if (keyIsDown(RIGHT_ARROW)) {
       this.x += 2;
     }
-    else if (keyIsDown(UP_ARROW)) {
+    if (keyIsDown(UP_ARROW)) {
       this.y -= 2;
     }
-    else if (keyIsDown(DOWN_ARROW)) {
+    if (keyIsDown(DOWN_ARROW)) {
       this.y += 2;
     }
     // stay inside the tilemap
@@ -139,6 +144,7 @@ class mainCharObj {
     for (var i = 0; i < game.prizes.length; i++) {
       if (dist(this.x, this.y, game.prizes[i].x, game.prizes[i].y) < 15) {
         game.prizes[i].collected = true;
+        game.score++;
       }
     }
     // bounce back a little when bumping into a rock
@@ -180,49 +186,57 @@ class enemyObj {
 class gameObj {
   constructor() {
     this.tilemap = [
-      "                                        ",
-      "         p                              ",
-      "                                        ",
-      "                r            p          ",
-      "              p                         ",
-      "                                        ",
-      "                                  p     ",
-      "     p                                  ",
-      "                                        ",
-      "                   p                    ",
-      "                                        ",
-      "         r                      r       ",
-      "                                        ",
-      "               p                        ",
-      "                                 p      ",
-      "    p                                   ",
-      "                                        ",
-      "     r                                  ",
-      "                   r     p              ",
-      "                                        ",
-      "                                        ",
-      "                                        ",
-      "          p                             ",
-      "                            p           ",
-      "                                        ",
-      "  p                            r        ",
-      "                                        ",
-      "     r                             p    ",
-      "           p                            ",
-      "                                        ",
-      "                          p             ",
-      "                                        ",
-      "    p              r                p   ",
-      "                                        ",
-      "                                        ",
-      "  r                                     ",
-      "                               p        ",
-      "            p                           ",
-      "                                        ",
-      "                            r           ",];
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "b                                        b",
+      "b                                        b",
+      "b             p                    p     b",
+      "b                                        b",
+      "b          r                p            b",
+      "b   p                                    b",
+      "b        e                               b",
+      "b                      p          r      b",
+      "b      r                      e          b",
+      "b                                        b",
+      "b  p                                     b",
+      "b                e               r       b",
+      "b                         p              b",
+      "b                                        b",
+      "b         p                       p      b",
+      "b                                        b",
+      "b r                   r                  b",
+      "b                                        b",
+      "b                         p              b",
+      "b        p                               b",
+      "b                                        b",
+      "b                                  p     b",
+      "b                                        b",
+      "b                  r                     b",
+      "b   p                           e        b",
+      "b                                        b",
+      "b        e                               b",
+      "b                                        b",
+      "b                   p          p         b",
+      "b                                        b",
+      "b                                r       b",
+      "b   r     p                              b",
+      "b                             p          b",
+      "b                                        b",
+      "b           e   p                        b",
+      "b                                        b",
+      "b                            p           b",
+      "b                                        b",
+      "b       p            r                   b",
+      "b                                        b",
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",];
     //todo
     this.prizes = [];
     this.rocks = [];
+    this.enemies = [];
+    this.score = 0;
+    this.win = false;
+    this.gameOver = false;
+    this.xCor = -200;
+    this.yCor = -200;
   }
 
   initialize() {
@@ -232,6 +246,8 @@ class gameObj {
           case 'p': this.prizes.push(new prizeObj(j*20, i*20));
           break;
           case 'r': this.rocks.push(new rockObj(j*20, i*20));
+          break;
+          case 'e': this.enemies.push(new enemyObj(j*20, i*20));
           break;
         }
       }
@@ -246,49 +262,93 @@ class gameObj {
           break;
           case 'r': image(objects[1], j*20, i*20, 20, 20);
           break;
+          case 'e': image(objects[3], j*20, i*20, 20, 20);
+          break;
+          case 'b': image(objects[4], j*20, i*20, 20, 20);
+          break;
         }
       }
     }
+
+    /* if (this.xCor >= -300 && this.xCor <= 500) {
+      this.xCor -= mainChar.x - 400;
+      mainChar.x = 400;
+    } */
+    //if (this.xCor <= 0 && this.yCor <= 0) {
+      if (keyIsDown(LEFT_ARROW)) {
+        this.xCor += 2;
+      }
+      if (keyIsDown(RIGHT_ARROW)) {
+        this.xCor -= 2;
+      }
+      if (keyIsDown(UP_ARROW)) {
+        this.yCor += 2;
+      }
+      if (keyIsDown(DOWN_ARROW)) {
+        this.yCor -= 2;
+      }
+    //}
+
+
   }
 }
 
 var mainChar;
-var enemies = [];
+//var enemies = [];
 var game;
 
 function setup() {
   createCanvas(400, 400);
   customChar();
-  mainChar = new mainCharObj(100, 100);
-
+  mainChar = new mainCharObj(400, 400);
+  /*
   enemies[0] = new enemyObj(480, 300);
   enemies[1] = new enemyObj(680, 420);
   enemies[2] = new enemyObj(360, 500);
   enemies[3] = new enemyObj(460, 720);
   enemies[4] = new enemyObj(460, 120);
   enemies[5] = new enemyObj(80, 260);
-
+  */
   game = new gameObj();
+  game.initialize();
 }
 
 function draw() {
-  background(200, 255, 200);  // light green
 
-  game.initialize();
-  game.drawBackground(); 
+  if (game.gameOver === false) {
+    background(200, 255, 200);  // light green
 
-  for (var i = 0; i < game.prizes.length; i++) {
-    if (game.prizes[i].collected === true) {
-      game.prizes[i].remove();
+    push();
+    translate(game.xCor, game.yCor);
+    game.drawBackground();
+    for (var i = 0; i < game.prizes.length; i++) {
+      if (game.prizes[i].collected === true) {
+        game.prizes[i].remove();
+      }
     }
+    mainChar.draw();
+    mainChar.move();
+    pop();
+
+    //game.initialize();
+    //game.drawBackground(); 
+
+    /* for (var i = 0; i < game.prizes.length; i++) {
+      if (game.prizes[i].collected === true) {
+        game.prizes[i].remove();
+      }
+    } */
+  
+    //mainChar.draw();
+    //mainChar.move();
+  
+    /*
+    for (var i = 0; i < enemies.length; i++) {
+      enemies[i].draw();
+      //enemies[i].move();
+    }
+    */
   }
   
-  mainChar.draw();
-  mainChar.move();
-  
-  for (var i = 0; i < enemies.length; i++) {
-    enemies[i].draw();
-    //enemies[i].move();
-  }
   
 }
