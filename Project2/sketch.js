@@ -2,7 +2,21 @@
 Project 2 - Simple Game with Tilemap
 Author: Chenyi Wang
 Date: 09/14/22
-  
+
+This program has a tilemap of size 800 x 800.
+The outer edges of the game area is marked with white borders.
+There are 20 prizes, 10 rocks, 6 enemies and 1 main character inside 
+the tilemap, each is 20 x 20 pixels.
+The main character moves with the arrow keys, it can move around inside 
+the game area, and the tilemap will scroll as the character moves.
+The enemies wander around, but will chase the main character when they 
+are close to each other.
+When a enemy catches the main character, game over.
+A separate game over screen will then show. 
+When enemies or main character bumpes into a rock, it bouces back a little.
+When the character touches a prize, it will collect it.
+When all the prizes are collected, the player win.
+A separate win screen will then show. 
 */
 
 var objects = [];
@@ -86,7 +100,8 @@ class prizeObj {
     image(objects[0], this.x, this.y, 20, 20);
   }
 
-  remove() {
+  remove() {  
+    // cover the image of prize with a squire with color of background
     fill(200, 255, 200);  // same as background color
     square(this.x, this.y, 20);
   }
@@ -127,6 +142,7 @@ class mainCharObj {
     if (keyIsDown(DOWN_ARROW)) {
       this.y += 2;
     }
+
     // stay inside the tilemap
     if (this.x < 20) {
       this.x = 20;
@@ -140,6 +156,7 @@ class mainCharObj {
     else if (this.y > 800) {
       this.y = 800;
     }
+
     // the prizes are collected when the main character touches it
     for (var i = 0; i < game.prizes.length; i++) {
       if (game.prizes[i].collected === false && dist(this.x, this.y, game.prizes[i].x, game.prizes[i].y) < 15) {
@@ -147,6 +164,7 @@ class mainCharObj {
         game.score++;
       }
     }
+
     // bounce back a little when bumping into a rock
     for (var i = 0; i < game.rocks.length; i++) {
       if (dist(this.x, this.y, game.rocks[i].x, game.rocks[i].y) < 20) {
@@ -189,6 +207,7 @@ class enemyObj {
     // the enemies wander around
     this.x += this.xDir;
     this.y += this.yDir;
+
     // stay inside the tilemap
     if (this.x >= 800 || this.x < 20) {
       this.xDir = -this.xDir; 
@@ -196,6 +215,7 @@ class enemyObj {
     if (this.y >= 800 || this.y < 20) {
       this.yDir = -this.yDir; 
     }
+
     // bounce back a little when bumping into a rock
     for (var i = 0; i < game.rocks.length; i++) {
       if (dist(this.x, this.y, game.rocks[i].x, game.rocks[i].y) < 20) {
@@ -213,6 +233,7 @@ class enemyObj {
         }
       }
     }
+
     // when enemies see the main character, they will chase the main character
     if (dist(this.x, this.y, mainChar.x, mainChar.y) < 60) {
       this.step.set(mainChar.x - this.x, mainChar.y - this.y);
@@ -221,7 +242,7 @@ class enemyObj {
       this.x += this.step.x;
       this.y += this.step.y;
       if (dist(this.x, this.y, mainChar.x, mainChar.y) < 10) {
-        game.gameOver = true;
+        game.gameOver = true; // enemy caught the main character
       }
     }
   }
@@ -341,22 +362,22 @@ function setup() {
 }
 
 function draw() {
-  if (game.score === 20) {  // collected all 20 of prizes
-    background(200, 255, 200);  // light green
+  if (game.score === 20) {  // collected all 20 of prizes, win
+    background(200, 255, 200);
     fill(0);
     textStyle(BOLD);
     textFont('Courier New', 40);
     text("YOU WIN!", 100, 200);
   }
 
-  else if (game.gameOver === false) {
+  else if (game.gameOver === false) { // game continuous
     background(200, 255, 200);  // light green
     push();
     translate(game.xCor, game.yCor);
     game.drawBackground();
     for (var i = 0; i < game.prizes.length; i++) {
       if (game.prizes[i].collected === true) {
-        game.prizes[i].remove();
+        game.prizes[i].remove();  // make the collected prizes invisible
       }
     }
     mainChar.draw();
