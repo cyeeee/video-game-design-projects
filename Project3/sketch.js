@@ -50,6 +50,12 @@ function draw() {
       enemies[i].move();
     }
     pop();
+    // display the score
+    fill(0);
+    textStyle(BOLD);
+    textFont('Times New Roman', 15);
+    text("prizes collected: " + game.score + "/20", 255, 20);
+
   }
 
   else {  // game over

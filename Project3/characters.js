@@ -6,6 +6,7 @@ class mainCharObj {
     constructor(x, y) {
       this.x = x;
       this.y = y;
+      this.angle = 0;
     }
   
     draw() {
@@ -13,17 +14,19 @@ class mainCharObj {
     }
   
     move() {
-      // The main character moves with the arrow keys.
-      if (keyIsDown(LEFT_ARROW)) {
+      // The main character is controlled by the arrow keys or WASD.
+      // LEFT and RIGHT-arrows to rotate the main character a small angle. 
+      // UP and DOWN-arrows to move forward / backward.
+      if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) {
         this.x -= 2;
       }
-      if (keyIsDown(RIGHT_ARROW)) {
+      if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) {
         this.x += 2;
       }
-      if (keyIsDown(UP_ARROW)) {
+      if (keyIsDown(UP_ARROW) || keyIsDown(87)) {
         this.y -= 2;
       }
-      if (keyIsDown(DOWN_ARROW)) {
+      if (keyIsDown(DOWN_ARROW) || keyIsDown(83)) {
         this.y += 2;
       }
   
