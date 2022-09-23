@@ -138,10 +138,6 @@ class wanderState {
     }
     this.wanderDist--;
     me.position.add(this.step);
-    // avoid rocks
-    me.checkRocks();
-    me.velocity.div(5);
-    me.position.add(me.velocity);
     // stay inside the tilemap 
     // (bounce back a little bit when hit the border)
     if (me.position.x < 30) {
@@ -161,6 +157,10 @@ class wanderState {
     if (dist(mainChar.position.x, mainChar.position.y, me.position.x, me.position.y) < 80) {
       me.changeState(1);
     } 
+    // avoid rocks
+    if (me.toRock === true) {
+      me.changeState(2);
+    }
   }
 } 
 
@@ -171,11 +171,12 @@ class chaseState {
 
   execute(me) {
     if (dist(mainChar.position.x, mainChar.position.y, me.position.x, me.position.y) > 10) {
-      me.checkRocks();
-      me.position.add(me.velocity);
+      if (me.toRock === true) {
+        me.changeState(2);
+      }
       this.step.set(mainChar.position.x - me.position.x, mainChar.position.y - me.position.y);
       this.step.normalize();
-      this.step.div(2);
+      //this.step.div(2);
       me.angle = this.step.heading() + HALF_PI;
       me.position.add(this.step);
     }
@@ -188,14 +189,46 @@ class chaseState {
     } 
   }
 }
+
+class avoidRockState {
+  constructor() {
+    this.step = new p5.Vector(0, 0);
+  }
+
+  execute(me) {
+    var rockPos = createVector(game.rocks[enemies.rockIdx].x+10, game.rocks[enemies.rockIdx].y+10); // center of the object
+    var pos = createVector(me.position.x+10, me.position.y+10);
+    var vec = p5.Vector.sub(rockPos, pos);
+    var angle = me.angle - HALF_PI - vec.heading();
+    var y = vec.mag() * cos(angle);
+    if (y > -1 && y < 200) {  // -1 instead of 0 to account for cos() = 0;
+      var x = vec.mag() * sin(angle);
+      if (x > 0 && x < 150) {
+        me.angle += PI/180;
+      }
+      else if (x <= 0 && x > -150) {
+        me.angle -= PI/180;
+      }
+      this.step.set(sin(me.angle), -cos(me.angle));
+      this.step.normalize();
+      me.position.add(this.step);
+    }
+
+    if (dist(this.position.x, this.position.y, game.rocks[enemies.rockIdx].x, game.rocks[enemies.rockIdx].y) > 30) {
+      me.toRock = false;
+      me.changeState(0);
+    }
+  }
+}
   
 class enemyObj {
     constructor(x, y) {
       this.position = new p5.Vector(x, y);
-      this.state = [new wanderState(), new chaseState()];
+      this.state = [new wanderState(), new chaseState(), new avoidRockState()];
       this.currState = 0;
       this.angle = 0;
-      this.velocity = new p5.Vector(0, 0);
+      this.toRock = false;
+      this.rockIdx = 0;
     }
 
     changeState(x) {
@@ -212,42 +245,11 @@ class enemyObj {
 
     checkRocks() {
       for (var i = 0; i < game.rocks.length; i++) {
-        var rockPos = createVector(game.rocks[i].x+10, game.rocks[i].y+10); // center of the object
-        var pos = createVector(this.position.x+10, this.position.y+10);
-        var vec = p5.Vector.sub(rockPos, pos);
-        var angle = this.angle - HALF_PI - vec.heading();
-        var y = vec.mag() * cos(angle);
-        if (y > -1 && y < 200) {  // -1 instead of 0 to account for cos() = 0;
-          var x = vec.mag() * sin(angle);
-          if (x > 0 && x < 150) {
-            this.angle += PI/180;
-          }
-          else if (x <= 0 && x > -150) {
-            this.angle -= PI/180;
-          }
-          this.velocity.set(sin(this.angle), -cos(this.angle));
-          this.velocity.normalize();
+        if (dist(this.position.x, this.position.y, game.rocks[i].x, game.rocks[i].y) < 30) {
+          this.toRock = true;
+          this.rockIdx = i;
         }
       }
     }
-  
-    /* move() {
-      // bounce back a little when bumping into a rock
-      for (var i = 0; i < game.rocks.length; i++) {
-        if (dist(this.x, this.y, game.rocks[i].x, game.rocks[i].y) < 20) {
-          if (this.x < game.rocks[i].x) {
-            this.x -= 5;
-          }
-          if (this.x > game.rocks[i].x) {
-            this.x += 5;
-          }
-          if (this.y < game.rocks[i].y) {
-            this.y -= 5;
-          }
-          if (this.y > game.rocks[i].y) {
-            this.y -= 5;
-          }
-        }
-    }*/ 
 }
   
