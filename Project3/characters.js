@@ -45,17 +45,17 @@ class mainCharObj {
       this.control();
   
       // stay inside the tilemap
-      if (this.position.x < 20) {
-        this.position.x = 20;
+      if (this.position.x < 30) {
+        this.position.x = 30;
       }
-      else if (this.position.x > 800) {
-        this.position.x = 800;
+      else if (this.position.x > 810) {
+        this.position.x = 810;
       }
-      else if (this.position.y < 20) {
-        this.position.y = 20;
+      else if (this.position.y < 30) {
+        this.position.y = 30;
       }
-      else if (this.position.y > 800) {
-        this.position.y = 800;
+      else if (this.position.y > 810) {
+        this.position.y = 810;
       }
   
       // the prizes are collected when the main character touches it
