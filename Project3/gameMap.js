@@ -113,17 +113,13 @@ class gameObj {
       }
 
       // scroll the map as the main character moves around
-      if (keyIsDown(LEFT_ARROW)) {
-        this.xCor += 2;
+      if (keyIsDown(UP_ARROW) || keyIsDown(87)) {
+        this.xCor -= mainChar.step.x;
+        this.yCor -= mainChar.step.y;
       }
-      if (keyIsDown(RIGHT_ARROW)) {
-        this.xCor -= 2;
-      }
-      if (keyIsDown(UP_ARROW)) {
-        this.yCor += 2;
-      }
-      if (keyIsDown(DOWN_ARROW)) {
-        this.yCor -= 2;
+      if (keyIsDown(DOWN_ARROW) || keyIsDown(83)) {
+        this.xCor -= mainChar.step.x;
+        this.yCor -= mainChar.step.y;
       }
     }
 }
