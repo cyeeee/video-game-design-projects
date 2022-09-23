@@ -133,10 +133,15 @@ class wanderState {
       this.wanderDist = random(50, 80);
       me.angle = random(0, 360);
       this.step.set(cos(me.angle), sin(me.angle));
+      this.step.normalize();
       this.step.div(5);
     }
     this.wanderDist--;
     me.position.add(this.step);
+    // avoid rocks
+    me.checkRocks();
+    me.velocity.div(5);
+    me.position.add(me.velocity);
     // stay inside the tilemap 
     // (bounce back a little bit when hit the border)
     if (me.position.x < 30) {
@@ -153,7 +158,7 @@ class wanderState {
     }
 
     // when enemies see the main character, they will chase the main character
-    if (dist(mainChar.position.x, mainChar.position.y, me.position.x, me.position.y) < 100) {
+    if (dist(mainChar.position.x, mainChar.position.y, me.position.x, me.position.y) < 80) {
       me.changeState(1);
     } 
   }
@@ -166,8 +171,11 @@ class chaseState {
 
   execute(me) {
     if (dist(mainChar.position.x, mainChar.position.y, me.position.x, me.position.y) > 10) {
+      me.checkRocks();
+      me.position.add(me.velocity);
       this.step.set(mainChar.position.x - me.position.x, mainChar.position.y - me.position.y);
       this.step.normalize();
+      this.step.div(2);
       me.angle = this.step.heading() + HALF_PI;
       me.position.add(this.step);
     }
@@ -175,7 +183,7 @@ class chaseState {
       game.gameOver = true; // enemy caught the main character
     } 
 
-    if (dist(me.position.x, me.position.y, mainChar.position.x, mainChar.position.y) > 100) {
+    if (dist(me.position.x, me.position.y, mainChar.position.x, mainChar.position.y) > 80) {
       me.changeState(0);
     } 
   }
@@ -187,6 +195,7 @@ class enemyObj {
       this.state = [new wanderState(), new chaseState()];
       this.currState = 0;
       this.angle = 0;
+      this.velocity = new p5.Vector(0, 0);
     }
 
     changeState(x) {
@@ -199,6 +208,27 @@ class enemyObj {
       rotate(this.angle);   
       image(objects[3], -10, -10, 20, 20);
       pop(); 
+    }
+
+    checkRocks() {
+      for (var i = 0; i < game.rocks.length; i++) {
+        var rockPos = createVector(game.rocks[i].x+10, game.rocks[i].y+10); // center of the object
+        var pos = createVector(this.position.x+10, this.position.y+10);
+        var vec = p5.Vector.sub(rockPos, pos);
+        var angle = this.angle - HALF_PI - vec.heading();
+        var y = vec.mag() * cos(angle);
+        if (y > -1 && y < 200) {  // -1 instead of 0 to account for cos() = 0;
+          var x = vec.mag() * sin(angle);
+          if (x > 0 && x < 150) {
+            this.angle += PI/180;
+          }
+          else if (x <= 0 && x > -150) {
+            this.angle -= PI/180;
+          }
+          this.velocity.set(sin(this.angle), -cos(this.angle));
+          this.velocity.normalize();
+        }
+      }
     }
   
     /* move() {

@@ -53,9 +53,8 @@ function draw() {
     mainChar.draw();
     mainChar.move();
     for (var i = 0; i < enemies.length; i++) {
-      enemies[i].draw();
-      //enemies[i].move();
       enemies[i].state[enemies[i].currState].execute(enemies[i]);
+      enemies[i].draw();
     }
     pop();
     // display the score
