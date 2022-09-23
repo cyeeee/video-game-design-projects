@@ -24,10 +24,17 @@ class rockObj {
     constructor(x, y) {
       this.x = x;
       this.y = y;
+      this.hit = false;
     }
   
     draw() {
       image(objects[1], this.x, this.y, 20, 20);
+    }
+
+    remove() {  
+      // cover the image of rock with a squire with color of background
+      fill(200, 255, 200);  // same as background color
+      square(this.x, this.y, 20);
     }
 }
   

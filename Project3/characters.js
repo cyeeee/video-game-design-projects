@@ -61,7 +61,8 @@ class mainCharObj {
   
       // the prizes are collected when the main character touches it
       for (var i = 0; i < game.prizes.length; i++) {
-        if (game.prizes[i].collected === false && dist(this.position.x, this.position.y, game.prizes[i].x+10, game.prizes[i].y+10) < 15) {
+        if (game.prizes[i].collected === false 
+          && dist(this.position.x, this.position.y, game.prizes[i].x+10, game.prizes[i].y+10) < 15) {
           game.prizes[i].collected = true;
           game.score++;
         }
@@ -69,7 +70,8 @@ class mainCharObj {
   
       // bounce back a little when bumping into a rock
       for (var i = 0; i < game.rocks.length; i++) {
-        if (dist(this.position.x, this.position.y, game.rocks[i].x+10, game.rocks[i].y+10) < 20) {
+        if (game.rocks[i].hit === false 
+          && dist(this.position.x, this.position.y, game.rocks[i].x+10, game.rocks[i].y+10) < 20) {
           if (this.position.x < game.rocks[i].x) {
             this.position.x -= this.step.x*5;
             game.xCor += this.step.x*5;
@@ -91,10 +93,9 @@ class mainCharObj {
     }
 }
 
-/* class missileObj {
+class missileObj {
   constructor() {
-    this.x = mainChar.position.x;
-    this.y = mainChar.position.y;
+    this.position = createVector(mainChar.position.x, mainChar.position.y);
     this.step = new p5.Vector(0, -1);
     this.angle = 0;
     this.fire = 0;
@@ -102,25 +103,34 @@ class mainCharObj {
 
   draw() {
     push();
-    translate(this.x, this.y);
+    translate(this.position);
     rotate(this.angle);   
     image(objects[4], -7, -7, 15, 15);
-    pop(); 
-  }
-
-  checkFire() {
-    this.angle = mainChar.position.heading();
     this.step.set(sin(this.angle), -cos(this.angle));
     this.step.normalize();
-    this.x += this.step.x;
-    this.y += this.step.y;
-  }
-
-  move() {
-    this.checkFire();
+    this.step.mult(5);
+    this.position.add(this.step);
+    // When a missile hits a rock, both the missile and the rock will disappear.
+    for (var i = 0; i < game.rocks.length; i++) {
+      if (game.rocks[i].hit === false 
+        && dist(this.position.x, this.position.y, game.rocks[i].x+10, game.rocks[i].y+10) < 10) {
+          game.rocks[i].hit = true;
+          this.fire = 0;
+        }
+    }
     //todo
+    pop(); 
   }
-} */
+} 
+
+function checkFire() {
+  if (keyIsDown(32)) {
+    missile.fire = 1;
+    missile.angle = mainChar.angle;
+    missile.position.x = mainChar.position.x;
+    missile.position.y = mainChar.position.y;
+  }
+}
 
 class wanderState {
   constructor() {
@@ -245,7 +255,8 @@ class enemyObj {
 
     checkRocks() {
       for (var i = 0; i < game.rocks.length; i++) {
-        if (dist(this.position.x, this.position.y, game.rocks[i].x, game.rocks[i].y) < 30) {
+        if (game.rocks[i].hit === false 
+          && dist(this.position.x, this.position.y, game.rocks[i].x, game.rocks[i].y) < 30) {
           this.toRock = true;
           this.rockIdx = i;
         }
