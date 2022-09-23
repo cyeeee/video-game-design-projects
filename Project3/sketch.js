@@ -3,6 +3,30 @@ Project 3 - Rotations, Automated Avoidance, and FSM-based NPC Behavior
 Author: Chenyi Wang
 Date: 09/21/22
 
+This program has a tilemap of size 800 x 800.
+There are 50 rocks, 20 prizes, 6 enemies, and 1 main character inside the map.
+
+The main character can be controlled by either arrows keys or WASD.
+- LEFT and RIGHT-arrows (A and D) to rotate the main character by 1 degree.
+- UP and DOWN-arrows (W and S) to move forward and backward respectively.
+When enemies or main character bumpes into a rock, it bouces back a little.
+When the character touches a prize, it will collect it.
+The number of prizes collected will be shown at the top right corner of the screen.
+When all the prizes are collected, the player win.
+A separate win screen will then show. 
+
+The main character can fire a missile by using the space bar.
+The missile will move in a straight line in the direction of the main character facing.
+When a missile hits a rock, both the missile and the rock will disappear.
+The enemies always face the direction of their moving.
+The behavior of enemies has 4 states:
+1. wander: The enemies wander around when they are far away from other objects
+2. chase: The enemies will chase the main character when they are close to each other
+3. avoid rocks: The enemies will avoid the rocks
+4. avoid missile: The enemies will try to avoid being hit by a missile
+When a missile hits an enemy, the color of the enemy will be changed 
+to indicate that it is injured, and the missile will disappear. 
+When a second missile hits a injured enemy, the enemy will disappear.
 
 */
 
@@ -64,7 +88,8 @@ function draw() {
       }
     }
     pop();
-    // display the score
+
+    // always display the score in the game screen
     fill(0);
     textStyle(BOLD);
     textFont('Times New Roman', 15);
