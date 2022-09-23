@@ -50,11 +50,26 @@ function customChar() {
   ellipse(250, 130, 20, 50);
   objects.push(get(0, 0, width, height));
 
-  // enemy
+  // enemy (normal)
   fill(200, 255, 200);
   rect(0, 0, 400, 400);
   noStroke();
   fill(255, 0, 0);
+  triangle(200, 200, 300, 380, 100, 380);
+  circle(200, 130, 220);
+  rect(250, 300, 30, 5);
+  fill(0);
+  arc(150, 130, 70, 70, 0, PI + QUARTER_PI, CHORD);
+  arc(250, 130, 70, 70, 0 - QUARTER_PI, PI, CHORD);
+  triangle(280, 230, 290, 290, 270, 290);
+  rect(278, 290, 5, 80);
+  objects.push(get(0, 0, width, height));
+
+  // enemy (injured)
+  fill(200, 255, 200);
+  rect(0, 0, 400, 400);
+  noStroke();
+  fill(0, 0, 255);
   triangle(200, 200, 300, 380, 100, 380);
   circle(200, 130, 220);
   rect(250, 300, 30, 5);
