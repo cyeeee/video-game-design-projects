@@ -106,7 +106,7 @@ class gameObj {
             break;
             case 'r': image(objects[1], j*20, i*20, 20, 20);
             break;
-            case 'b': image(objects[4], j*20, i*20, 20, 20);
+            case 'b': image(objects[5], j*20, i*20, 20, 20);
             break;
           }
         }

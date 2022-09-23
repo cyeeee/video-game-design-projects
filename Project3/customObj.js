@@ -65,6 +65,17 @@ function customChar() {
   rect(278, 290, 5, 80);
   objects.push(get(0, 0, width, height));
 
+  // missile
+  fill(200, 255, 200);
+  rect(0, 0, 400, 400);
+  noStroke();
+  fill(0);
+  rect(150, 120, 100, 270);
+  ellipse(200, 120, 100, 220);
+  fill(255, 255, 0);
+  quad(150, 350, 250, 350, 260, 390, 140, 390);
+  objects.push(get(0, 0, width, height));
+
   // border
   fill(255);
   rect(0, 0, 400, 400);

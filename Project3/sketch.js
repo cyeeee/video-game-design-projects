@@ -7,6 +7,7 @@ Date: 09/21/22
 */
 
 var mainChar;
+//var missile;
 var enemies = [];
 var game;
 
@@ -14,6 +15,7 @@ function setup() {
   createCanvas(400, 400);
   customChar();
   mainChar = new mainCharObj(400, 400);
+  //missile = new missileObj();
   enemies[0] = new enemyObj(480, 300);
   enemies[1] = new enemyObj(680, 420);
   enemies[2] = new enemyObj(360, 500);
@@ -22,6 +24,7 @@ function setup() {
   enemies[5] = new enemyObj(80, 260);
   game = new gameObj();
   game.initialize();
+  angleMode(RADIANS);
 }
 
 function draw() {
@@ -43,11 +46,16 @@ function draw() {
         game.prizes[i].remove();  // make the collected prizes invisible
       }
     }
+/*     if (keyIsDown(32)) {  //Space bar to fire a missile
+      missile.draw();
+      missile.move();
+    } */
     mainChar.draw();
     mainChar.move();
     for (var i = 0; i < enemies.length; i++) {
       enemies[i].draw();
-      enemies[i].move();
+      //enemies[i].move();
+      enemies[i].state[enemies[i].currState].execute(enemies[i]);
     }
     pop();
     // display the score

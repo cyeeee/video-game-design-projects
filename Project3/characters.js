@@ -22,7 +22,7 @@ class mainCharObj {
       // LEFT and RIGHT-arrows to rotate the main character a small angle. 
       // UP and DOWN-arrows to move forward / backward.
       if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) {
-        this.angle -= PI/180;
+        this.angle -= PI/180; // one degree
       }
       if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) {
         this.angle += PI/180;
@@ -30,14 +30,15 @@ class mainCharObj {
       if (keyIsDown(UP_ARROW) || keyIsDown(87)) {
         this.step.set(sin(this.angle), -cos(this.angle));
         this.step.normalize();
-        this.position.x += this.step.x;
-        this.position.y += this.step.y;
+        this.step.mult(2);
+        this.position.add(this.step);
       }
       if (keyIsDown(DOWN_ARROW) || keyIsDown(83)) {
         this.step.set(-sin(this.angle), cos(this.angle));
         this.step.normalize();
-        this.position.x += this.step.x;
-        this.position.y += this.step.y;
+        this.step.mult(2);
+        this.position.add(this.step);
+
       }
     }
   
@@ -89,35 +90,118 @@ class mainCharObj {
       }
     }
 }
-  
+
+/* class missileObj {
+  constructor() {
+    this.x = mainChar.position.x;
+    this.y = mainChar.position.y;
+    this.step = new p5.Vector(0, -1);
+    this.angle = 0;
+    this.fire = 0;
+  }
+
+  draw() {
+    push();
+    translate(this.x, this.y);
+    rotate(this.angle);   
+    image(objects[4], -7, -7, 15, 15);
+    pop(); 
+  }
+
+  checkFire() {
+    this.angle = mainChar.position.heading();
+    this.step.set(sin(this.angle), -cos(this.angle));
+    this.step.normalize();
+    this.x += this.step.x;
+    this.y += this.step.y;
+  }
+
+  move() {
+    this.checkFire();
+    //todo
+  }
+} */
+
+class wanderState {
+  constructor() {
+    this.wanderDist = 0;
+    this.step = new p5.Vector(0, 0);
+  }
+
+  execute(me) {
+    if (this.wanderDist <= 0) {
+      this.wanderDist = random(50, 80);
+      me.angle = random(0, 360);
+      this.step.set(cos(me.angle), sin(me.angle));
+      this.step.div(5);
+    }
+    this.wanderDist--;
+    me.position.add(this.step);
+    // stay inside the tilemap 
+    // (bounce back a little bit when hit the border)
+    if (me.position.x < 30) {
+      me.position.x += 5;
+    }
+    if (me.position.x > 810) {
+      me.position.x -= 5;
+    }
+    if (me.position.y < 30) {
+      me.position.y += 5;
+    }
+    if (me.position.y > 810) {
+      me.position.y -= 5;
+    }
+
+    // when enemies see the main character, they will chase the main character
+    if (dist(mainChar.position.x, mainChar.position.y, me.position.x, me.position.y) < 100) {
+      me.changeState(1);
+    } 
+  }
+} 
+
+class chaseState {
+  constructor() {
+    this.step = new p5.Vector(0, 0);
+  }
+
+  execute(me) {
+    if (dist(mainChar.position.x, mainChar.position.y, me.position.x, me.position.y) > 10) {
+      this.step.set(mainChar.position.x - me.position.x, mainChar.position.y - me.position.y);
+      this.step.normalize();
+      me.angle = this.step.heading() + HALF_PI;
+      me.position.add(this.step);
+    }
+    else {
+      game.gameOver = true; // enemy caught the main character
+    } 
+
+    if (dist(me.position.x, me.position.y, mainChar.position.x, mainChar.position.y) > 100) {
+      me.changeState(0);
+    } 
+  }
+}
   
 class enemyObj {
     constructor(x, y) {
-      this.x = x;
-      this.y = y;
-      this.xDir = random(-0.2, 0.2);
-      this.yDir = random(-0.2, 0.2);
-      this.step = new p5.Vector(0, -1);
+      this.position = new p5.Vector(x, y);
+      this.state = [new wanderState(), new chaseState()];
+      this.currState = 0;
       this.angle = 0;
+    }
+
+    changeState(x) {
+      this.currState = x;
     }
   
     draw() {
-      image(objects[3], this.x, this.y, 20, 20);
+      push();
+      translate(this.position);
+      rotate(this.angle);   
+      image(objects[3], -10, -10, 20, 20);
+      pop(); 
     }
   
-    move() {
-      // the enemies wander around
-      this.x += this.xDir;
-      this.y += this.yDir;
-  
-      // stay inside the tilemap
-      if (this.x >= 800 || this.x < 20) {
-        this.xDir = -this.xDir; 
-      }
-      if (this.y >= 800 || this.y < 20) {
-        this.yDir = -this.yDir; 
-      }
-  
+    /* move() {
       // bounce back a little when bumping into a rock
       for (var i = 0; i < game.rocks.length; i++) {
         if (dist(this.x, this.y, game.rocks[i].x, game.rocks[i].y) < 20) {
@@ -134,19 +218,6 @@ class enemyObj {
             this.y -= 5;
           }
         }
-      }
-  
-      /* // when enemies see the main character, they will chase the main character
-      if (dist(this.x, this.y, mainChar.x, mainChar.y) < 60) {
-        this.step.set(mainChar.x - this.x, mainChar.y - this.y);
-        this.step.normalize();
-        this.angle = this.step.heading() + HALF_PI;
-        this.x += this.step.x;
-        this.y += this.step.y;
-        if (dist(this.x, this.y, mainChar.x, mainChar.y) < 10) {
-          game.gameOver = true; // enemy caught the main character
-        }
-      } */
-    }
+    }*/ 
 }
   
