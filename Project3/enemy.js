@@ -9,6 +9,7 @@ class wanderState {
     }
   
     execute(me) {
+      me.avoidRocks();
       if (this.wanderDist <= 0) {
         this.wanderDist = random(50, 80);
         me.angle = random(0, 360);
@@ -19,13 +20,10 @@ class wanderState {
       this.wanderDist--;
       me.position.add(this.step);
       me.stay();
-      // avoid rocks
-      if (me.toRock === true) {
-        me.changeState(2);
-      }
+
       // The enemies should also try to avoid being hit by a missile
       if (dist(missile.position.x, missile.position.y, me.position.x, me.position.y) < 30) {
-        me.changeState(3);
+        me.changeState(2);
       } 
       // when enemies see the main character, they will chase the main character
       if (dist(mainChar.position.x, mainChar.position.y, me.position.x, me.position.y) < 80) {
@@ -41,9 +39,7 @@ class wanderState {
   
     execute(me) {
       if (dist(mainChar.position.x, mainChar.position.y, me.position.x, me.position.y) > 10) {
-        if (me.toRock === true) {
-          me.changeState(2);
-        }
+        me.avoidRocks();
         this.step.set(mainChar.position.x - me.position.x, mainChar.position.y - me.position.y);
         this.step.normalize();
         me.angle = this.step.heading() + HALF_PI;
@@ -58,43 +54,11 @@ class wanderState {
         me.changeState(0);
       } 
       if (dist(missile.position.x, missile.position.y, me.position.x, me.position.y) < 30) {
-        me.changeState(3);
+        me.changeState(2);
       } 
     }
   }
-  
-  class avoidRockState {
-    constructor() {
-      this.step = new p5.Vector(0, 0);
-    }
-  
-    execute(me) {
-      var rockPos = createVector(game.rocks[me.rockIdx].x+10, game.rocks[me.rockIdx].y+10); // center of the object
-      var pos = createVector(me.position.x+10, me.position.y+10);
-      var vec = p5.Vector.sub(rockPos, pos);
-      var angle = me.angle - HALF_PI - vec.heading();
-      var y = vec.mag() * cos(angle);
-      if (y > -100 && y < 250) {  // -1 instead of 0 to account for cos() = 0;
-        var x = vec.mag() * sin(angle);
-        if (x > 0 && x < 200) {
-          me.angle += PI/180;
-        }
-        else if (x <= 0 && x > -200) {
-          me.angle -= PI/180;
-        }
-        this.step.set(sin(me.angle), -cos(me.angle));
-        this.step.normalize();
-        me.position.add(this.step);
-        me.stay();
-      }
-  
-      if (dist(this.position.x, this.position.y, game.rocks[me.rockIdx].x, game.rocks[me.rockIdx].y) > 30) {
-        me.toRock = false;
-        me.changeState(0);
-      }
-    }
-  }
-  
+
   class avoidMissileState {
     constructor() {
       this.step = new p5.Vector(0, 0);
@@ -102,9 +66,7 @@ class wanderState {
   
     execute(me) {
       if (dist(me.position.x, me.position.y, missile.position.x, missile.position.y) > 10) {
-        if (me.toRock === true) {
-          me.changeState(2);
-        }
+        me.avoidRocks();
         me.angle = missile.angle;
         this.step.set(sin(me.angle), -cos(me.angle));
         this.step.normalize();
@@ -128,11 +90,9 @@ class wanderState {
   class enemyObj {
       constructor(x, y) {
         this.position = new p5.Vector(x, y);
-        this.state = [new wanderState(), new chaseState(), new avoidRockState(), new avoidMissileState()];
+        this.state = [new wanderState(), new chaseState(), new avoidMissileState()];
         this.currState = 0;
         this.angle = 0;
-        this.toRock = false;
-        this.rockIdx = 0;
         this.injured = false;
         this.dead = false;
       }
@@ -153,14 +113,14 @@ class wanderState {
         }
         pop(); 
       }
-  
-      checkRocks() {
+
+      avoidRocks() {
         for (var i = 0; i < game.rocks.length; i++) {
           if (game.rocks[i].hit === false 
-            && dist(this.position.x, this.position.y, game.rocks[i].x, game.rocks[i].y) < 30) {
-            this.toRock = true;
-            this.rockIdx = i;
-          }
+            && dist(this.position.x, this.position.y, game.rocks[i].x, game.rocks[i].y) < 25) {
+              this.position.x--;
+              this.position.y--;
+            }
         }
       }
   

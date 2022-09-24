@@ -18,12 +18,11 @@ A separate win screen will then show.
 The main character can fire a missile by using the space bar.
 The missile will move in a straight line in the direction of the main character facing.
 When a missile hits a rock, both the missile and the rock will disappear.
-The enemies always face the direction of their moving.
-The behavior of enemies has 4 states:
+The enemies always face the direction of their moving, and will always avoid the rocks.
+The behavior of enemies has 3 states:
 1. wander: The enemies wander around when they are far away from other objects
 2. chase: The enemies will chase the main character when they are close to each other
-3. avoid rocks: The enemies will avoid the rocks
-4. avoid missile: The enemies will try to avoid being hit by a missile
+3. avoid missile: The enemies will try to avoid being hit by a missile
 When a missile hits an enemy, the color of the enemy will be changed 
 to indicate that it is injured, and the missile will disappear. 
 When a second missile hits a injured enemy, the enemy will disappear.
