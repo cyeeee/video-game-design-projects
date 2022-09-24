@@ -22,7 +22,7 @@ class mainCharObj {
       // LEFT and RIGHT-arrows to rotate the main character a small angle. 
       // UP and DOWN-arrows to move forward / backward.
       if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) {
-        this.angle -= PI/90; // two degrees
+        this.angle -= PI/90; // one degree
       }
       if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) {
         this.angle += PI/90;
