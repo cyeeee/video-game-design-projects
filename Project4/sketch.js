@@ -76,6 +76,68 @@ function displayTilemap() {
   }
 }
 
+class ballObj {
+  constructor(x, y) {
+    this.pos = new p5.Vector(x, y);
+    this.velocity = new p5.Vector(0, 0);
+    this.acceleration = new p5.Vector(0, 0);
+    this.size = 15;
+    this.mass = this.size/5;
+    this.valid = 1;
+  }
+
+  draw() {
+    noStroke();
+    fill(255, 255, 204);  // light yellow
+    circle(this.pos.x, this.pos.y, this.size);
+  }
+
+  applyForce(force) {
+    var f = p5.Vector.div(force, this.mass);
+    this.acceleration.add(f);
+  }
+
+  update() {
+    var gravityForce = p5.Vector.mult(gravity, this.mass);
+    this.applyForce(gravityForce);
+    var windForce = p5.Vector.mult(wind, this.mass);
+    windForce.mult(windSpeed);
+    this.applyForce(windForce);
+    var airFriction = p5.Vector.mult(this.velocity, -0.02);
+    this.applyForce(airFriction);
+
+    this.velocity.add(this.acceleration);
+    this.pos.add(this.velocity);
+    
+    for (var i = 0; i < 35; i++) {
+      if (this.pos.x >= stairs[i].x && this.pos.x <= stairs[i].x+10) {
+        if (this.pos.y > (stairs[i].y-this.size/2)) {
+          this.pos.y = stairs[i].y-this.size/2;
+          this.velocity.y *= -1;
+        }
+      }
+    }
+
+    if (this.pos.x > (width+this.size/2)) {
+      this.pos.x = -this.size/2;
+    }
+
+    this.acceleration.set(0, 0);
+
+    // When the ball hits the right border of the canvas, it will disappear.
+    if (this.pos.x >= 400) {  
+      this.valid = 0;
+    } 
+  }
+}
+
+function generateBall() {
+  // generate a ball every 2 seconds
+  if (frameCount % 120 === 0) {
+    balls.push(new ballObj(30, -30));
+  }
+}
+
 class mainCharObj {
   constructor(x, y) {
     this.pos = new p5.Vector(x, y);
@@ -167,8 +229,17 @@ class mainCharObj {
       this.win = 1;
     }
 
+    // The player loses if the player falls off the stair hitting the bottom border.
+    if (this.pos.y+27 >= height) {
+      this.gameOver = 1;
+    }
   }
+}
 
+function initMainChar() {
+  mainChar = new mainCharObj(30, 333);
+  mainChar.win = 0;
+  mainChar.gameOver = 0;
 }
 
 function keyPressed() {
@@ -190,31 +261,71 @@ function keyReleased() {
   mainChar.force.set(0, 0);
 }
 
+function checkRestart() {
+  if (keyIsDown(13)) {
+    initialize = 1;
+  }
+}
+
 var mainChar;
-var gravity, walkForce, backForce, jumpForce;
+var balls = [];
+var gravity, walkForce, backForce, jumpForce, wind;
+var windSpeed = 0.013;
+var initialize = 1;
 
 function setup() {
   createCanvas(400, 400);
-  angleMode(RADIANS);
-  initializeTilemap();
   gravity = new p5.Vector(0, 0.15);
   walkForce = new p5.Vector(0.2, 0);
   backForce = new p5.Vector(-0.2, 0);
   jumpForce = new p5.Vector(0, -4);
-  mainChar = new mainCharObj(30, 333);
+  wind = new p5.Vector(1, 0);
+  initializeTilemap();
+  initMainChar();
 }
 
 function draw() {
+  // initialize the game
+  if (initialize === 1) {
+    initialize = 0;
+    initializeTilemap();
+    initMainChar();
+  }
+
   background(0);  // black
   displayTilemap();
 
   mainChar.update();
   mainChar.draw();
 
-  if (mainChar.win === 1) {
+  generateBall();
+  for (var i = 0; i < balls.length; i++) {
+    if (balls[i].valid === 1) {
+      balls[i].update();
+      balls[i].draw();
+    }
+
+  }
+
+  if (mainChar.gameOver === 1) {
     fill(255);
     textStyle(BOLD);
     textFont('Courier New', 40);
-    text("YOU WIN!", 100, 240);
+    text("GAME OVER", 80, 235);
+    textStyle(NORMAL);
+    textFont('Courier New', 14);
+    text("Press ENTER to restart", 90, 260);
+    checkRestart();
   }
+  else if (mainChar.win === 1) {
+    fill(255);
+    textStyle(BOLD);
+    textFont('Courier New', 40);
+    text("YOU WIN!", 100, 235);
+    textStyle(NORMAL);
+    textFont('Courier New', 14);
+    text("Press ENTER to restart", 90, 260);
+    checkRestart();
+  }
+
 }
