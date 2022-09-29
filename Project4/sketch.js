@@ -84,6 +84,7 @@ class mainCharObj {
     this.force = new p5.Vector(0, 0);
     this.jump = 0;
     this.gameOver = 0;
+    this.win = 0;
   }
 
   draw() {
@@ -120,38 +121,36 @@ class mainCharObj {
     this.applyForce(gravity);
     this.velocity.add(this.acceleration);
     this.pos.add(this.velocity);
-
     
     // land on the staircases
-    for (var i = 0; i < stairs.length; i++) {
-      if (this.pos.x >= stairs[i].x 
-        && this.pos.x <= stairs[i].x+10 
-        && this.pos.y >= stairs[i].y-27) {
-          if (stairs[i].y >= 220) {
+    if (this.pos.y+27 > 197) {
+      for (var i = 30; i < stairs.length; i++) {
+        if (this.pos.x >= stairs[i].x && this.pos.x <= stairs[i].x+10) {
+          if (this.pos.y >= stairs[i].y-27) {
             this.pos.y = stairs[i].y-27;
             this.velocity.y = 0;  // reset velocity on landing
             this.jump = 0;
           }
-      }
-      else {
-        this.force.set(0, 0);
-      }
-    }
-    
-   /*
-    for (var i = 0; i < stairs.length; i++) {
-      if (this.pos.x >= stairs[i].x && this.pos.x <= stairs[i].x+10 && stairs[i].y >= 220) {
-        if (this.pos.y >= stairs[i].y-27) {
-          this.pos.y = stairs[i].y-27;
-          this.velocity.y = 0;  // reset velocity on landing
-          this.jump = 0;
+        }
+        else {
+          this.force.set(0, 0);
         }
       }
-      else {
-        this.force.set(0, 0);
+    }
+    else {
+      for (var i = 0; i < 35; i++) {
+        if (this.pos.x >= stairs[i].x && this.pos.x <= stairs[i].x+10) {
+          if (this.pos.y >= stairs[i].y-27) {
+            this.pos.y = stairs[i].y-27;
+            this.velocity.y = 0;  // reset velocity on landing
+            this.jump = 0;
+          }
+        }
+        else {
+          this.force.set(0, 0);
+        }
       }
     }
-    */
 
     // stay inside the map
     if (this.pos.x < 10) {
@@ -161,6 +160,11 @@ class mainCharObj {
     else if (this.pos.x > 390) {
       this.pos.x = 390;
       this.velocity.x = 0;
+    }
+
+    // The player wins when the player character reaches the top of the stairs.
+    if (this.pos.x >= 10 && this.pos.x <= 50 && this.pos.y < 70) {
+      this.win = 1;
     }
 
   }
