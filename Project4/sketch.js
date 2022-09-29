@@ -109,6 +109,7 @@ class ballObj {
     this.velocity.add(this.acceleration);
     this.pos.add(this.velocity);
     
+    // Each ball will bounce on the stair as it hits the step on the stair
     for (var i = 0; i < 35; i++) {
       if (this.pos.x >= stairs[i].x && this.pos.x <= stairs[i].x+10) {
         if (this.pos.y > (stairs[i].y-this.size/2)) {
@@ -225,13 +226,20 @@ class mainCharObj {
     }
 
     // The player wins when the player character reaches the top of the stairs.
-    if (this.pos.x >= 10 && this.pos.x <= 50 && this.pos.y < 70) {
+    if (this.pos.x >= 10 && this.pos.x <= 50 && this.pos.y < 70 && this.gameOver === 0) {
       this.win = 1;
     }
 
     // The player loses if the player falls off the stair hitting the bottom border.
     if (this.pos.y+27 >= height) {
       this.gameOver = 1;
+    }
+
+    // The player loses when a ball hits the player
+    for (var i = 0; i < balls.length; i++) {
+      if (this.win === 0 && dist(this.pos.x, this.pos.y, balls[i].pos.x, balls[i].pos.y) < 10) {
+        this.gameOver = 1;
+      }
     }
   }
 }
@@ -262,7 +270,7 @@ function keyReleased() {
 }
 
 function checkRestart() {
-  if (keyIsDown(13)) {
+  if (keyIsDown(13) && (mainChar.win === 0 || mainChar.gameOver === 0)) {
     initialize = 1;
   }
 }
