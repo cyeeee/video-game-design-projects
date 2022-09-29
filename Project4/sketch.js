@@ -3,7 +3,23 @@ Project 4 - Hopper
 Author: Chenyi Wang
 Date: 09/27/22
 
+This project has a tilemap of 400x400 with several staircases.
+The main player starts at the bottom-left and need to climbs the stairs.
 
+The main player can be controlled with WAD, 
+- W: jump (can only jump again after having landed)
+- A: move left
+- D: move right
+The player must jump to climb to the next step, but can walk or jump down to the previous one.
+When the main character reaches the top of the stairs, the player wins.
+When the main character falls off the stair hitting the bottom border, game over. 
+
+Every 2 seconds, a ball will automatically be dropped from the top-left corner.
+The ball will gradually move to the right and bounces down the staircase due to a constant east wind.
+When the ball hits the right border of the canvas, it will disappear.
+When a ball hits the player, game over.
+
+When the player either wins or loses, if the ENTER key is pressed, the game will restart.
 
 */
 
