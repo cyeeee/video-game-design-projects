@@ -126,7 +126,7 @@ class mainCharObj {
     if (this.pos.y+27 > 197) {
       for (var i = 30; i < stairs.length; i++) {
         if (this.pos.x >= stairs[i].x && this.pos.x <= stairs[i].x+10) {
-          if (this.pos.y >= stairs[i].y-27) {
+          if (this.pos.y+27 >= stairs[i].y && this.pos.y+27 < stairs[i].y+10) {
             this.pos.y = stairs[i].y-27;
             this.velocity.y = 0;  // reset velocity on landing
             this.jump = 0;
@@ -140,7 +140,7 @@ class mainCharObj {
     else {
       for (var i = 0; i < 35; i++) {
         if (this.pos.x >= stairs[i].x && this.pos.x <= stairs[i].x+10) {
-          if (this.pos.y >= stairs[i].y-27) {
+          if (this.pos.y+27 >= stairs[i].y && this.pos.y+27 < stairs[i].y+10) {
             this.pos.y = stairs[i].y-27;
             this.velocity.y = 0;  // reset velocity on landing
             this.jump = 0;
@@ -210,4 +210,11 @@ function draw() {
 
   mainChar.update();
   mainChar.draw();
+
+  if (mainChar.win === 1) {
+    fill(255);
+    textStyle(BOLD);
+    textFont('Courier New', 40);
+    text("YOU WIN!", 100, 240);
+  }
 }
