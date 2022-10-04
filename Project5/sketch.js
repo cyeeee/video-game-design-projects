@@ -118,7 +118,7 @@ class ballObj {
     this.pos.add(this.velocity);
 
     // the ball spins while in air or rolling
-    this.aVelocity = this.velocity.mag() * 2;
+    this.aVelocity = this.velocity.mag() * 4;
     this.angle += this.aVelocity;
     
     // Each ball will bounce on the stair as it hits the step on the stair
@@ -144,14 +144,19 @@ class ballObj {
   }
 }
 
-/*
-class mainCharObj {
+class npcObj {
   constructor(x, y) {
     this.pos = new p5.Vector(x, y);
     this.velocity = new p5.Vector(0, 0);
     this.acceleration = new p5.Vector(0, 0);
     this.force = new p5.Vector(0, 0);
     this.jump = 0;
+    this.inAir = 0;
+    this.left = 0;
+    this.right = 0;
+    this.moveLeft = 0;
+    this.moveRight = 0;
+    this.botHalf = 1;
     this.gameOver = 0;
     this.win = 0;
   }
@@ -159,7 +164,7 @@ class mainCharObj {
   draw() {
     noStroke();
     fill(204, 255, 255);  // light blue
-    switch (this.jump) {
+    switch (this.inAir) {
       case 0: // normal mode       
         triangle(this.pos.x, this.pos.y, this.pos.x+10, this.pos.y+22, this.pos.x-10, this.pos.y+22);
         circle(this.pos.x, this.pos.y-5, 20);
@@ -185,23 +190,72 @@ class mainCharObj {
     this.acceleration.add(force);
   }
 
+  move() {
+    if (this.left === 1) {
+      this.force.add(backForce);
+      this.moveLeft = 1;
+    }
+    if (this.right === 1) {
+      this.force.add(walkForce);
+      this.moveRight = 1;
+    }
+    if (this.jump === 1) {
+      this.force.add(jumpForce);
+      this.inAir = 1;
+    }
+  }
+
   update() {
+    this.move();
     this.applyForce(this.force);
     this.applyForce(gravity);
     this.velocity.add(this.acceleration);
     this.pos.add(this.velocity);
+
+    if (this.pos.x === 390) {
+      this.botHalf = 0;
+    }
     
     // land on the staircases
-    if (this.pos.y+27 > 197) {
+    if (this.pos.y+27 > 197 && this.botHalf === 1) {
       for (var i = 30; i < stairs.length; i++) {
         if (this.pos.x >= stairs[i].x && this.pos.x <= stairs[i].x+10) {
+          if (this.moveRight === 0) {
+            this.moveLeft = 0;
+            this.left = 0;
+            this.right = 1;   
+          }
+          else {
+            this.right = 0;   
+          }
           if (this.pos.y+27 >= stairs[i].y && this.pos.y+27 < stairs[i].y+10) {
             this.pos.y = stairs[i].y-27;
             this.velocity.y = 0;  // reset velocity on landing
             this.jump = 0;
+            this.inAir = 0
           }
         }
         else {
+          if (this.inAir === 0) {
+            if (this.pos.x > 50 && this.pos.x <= 70) {
+              this.jump = 1;
+            }
+            else if (this.pos.x > 130 && this.pos.x <= 140) {
+              this.jump = 1;
+            }
+            else if (this.pos.x > 200 && this.pos.x <= 210) {
+              this.jump = 1;
+            }
+            else if (this.pos.x > 270 && this.pos.x <= 280) {
+              this.jump = 1;
+            }
+            else if (this.pos.x > 340 && this.pos.x <= 350) {
+              this.jump = 1;
+            }
+          }
+          else {
+            this.jump = 0;
+          }
           this.force.set(0, 0);
         }
       }
@@ -209,13 +263,42 @@ class mainCharObj {
     else {
       for (var i = 0; i < 35; i++) {
         if (this.pos.x >= stairs[i].x && this.pos.x <= stairs[i].x+10) {
+          if (this.moveLeft === 0) {
+            this.moveRight = 0;
+            this.left = 1;
+            this.right = 0;  
+          }
+          else {
+            this.left = 0;   
+          }
           if (this.pos.y+27 >= stairs[i].y && this.pos.y+27 < stairs[i].y+10) {
             this.pos.y = stairs[i].y-27;
             this.velocity.y = 0;  // reset velocity on landing
             this.jump = 0;
+            this.inAir = 0;
           }
         }
         else {
+          if (this.inAir === 0) {
+            if (this.pos.x < 350 && this.pos.x >= 340) {
+              this.jump = 1;
+            }
+            else if (this.pos.x < 280 && this.pos.x >= 270) {
+              this.jump = 1;
+            }
+            else if (this.pos.x < 210 && this.pos.x >= 200) {
+              this.jump = 1;
+            }
+            else if (this.pos.x < 140 && this.pos.x >= 130) {
+              this.jump = 1;
+            }
+            else if (this.pos.x < 70 && this.pos.x >= 60) {
+              this.jump = 1;
+            }
+          }
+          else {
+            this.jump = 0;
+          }
           this.force.set(0, 0);
         }
       }
@@ -231,7 +314,7 @@ class mainCharObj {
       this.velocity.x = 0;
     }
 
-    // The player wins when the player character reaches the top of the stairs.
+/*     // The player wins when the player character reaches the top of the stairs.
     if (this.pos.x >= 10 && this.pos.x <= 50 && this.pos.y < 70 && this.gameOver === 0) {
       this.win = 1;
     }
@@ -246,18 +329,15 @@ class mainCharObj {
       if (this.win === 0 && dist(this.pos.x, this.pos.y, balls[i].pos.x, balls[i].pos.y) < 10) {
         this.gameOver = 1;
       }
-    }
+    } */
   }
 }
-*/
 
-/*
-function initMainChar() {
-  mainChar = new mainCharObj(30, 333);
-  mainChar.win = 0;
-  mainChar.gameOver = 0;
+function initNPC() {
+  npcChar = new npcObj(30, 333);
+  //npcChar.win = 0;
+  //npcChar.gameOver = 0;
 }
-*/
 
 /*
 function keyPressed() {
@@ -295,7 +375,7 @@ function checkRestart() {
 }
 */
 
-//var mainChar;
+var npcChar;
 var balls = [];
 var gravity, walkForce, backForce, jumpForce, wind;
 var windSpeed = 0.013;
@@ -304,12 +384,12 @@ var initialize = 1;
 function setup() {
   createCanvas(400, 400);
   gravity = new p5.Vector(0, 0.15);
-  walkForce = new p5.Vector(0.2, 0);
-  backForce = new p5.Vector(-0.2, 0);
+  walkForce = new p5.Vector(0.4, 0);
+  backForce = new p5.Vector(-0.4, 0);
   jumpForce = new p5.Vector(0, -4);
   wind = new p5.Vector(1, 0);
   initializeTilemap();
-  //initMainChar();
+  initNPC();
 }
 
 function draw() {
@@ -323,8 +403,8 @@ function draw() {
   background(0);  // black
   displayTilemap();
 
-  //mainChar.update();
-  //mainChar.draw();
+  npcChar.update();
+  npcChar.draw();
 
   for (var i = 0; i < balls.length; i++) {
     if (balls[i].valid === 1) {
