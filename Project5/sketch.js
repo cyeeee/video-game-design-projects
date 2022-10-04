@@ -156,9 +156,7 @@ class npcObj {
     this.right = 0;
     this.moveLeft = 0;
     this.moveRight = 0;
-    this.botHalf = 1;
-    this.gameOver = 0;
-    this.win = 0;
+    this.botHalf = 0;
   }
 
   draw() {
@@ -212,6 +210,9 @@ class npcObj {
     this.velocity.add(this.acceleration);
     this.pos.add(this.velocity);
 
+    if (this.pos.y+27 > 230) {
+      this.botHalf = 1;
+    }
     if (this.pos.x === 390) {
       this.botHalf = 0;
     }
@@ -237,6 +238,7 @@ class npcObj {
         }
         else {
           if (this.inAir === 0) {
+            // hard coded because NPC has knowledge of the staircase
             if (this.pos.x > 50 && this.pos.x <= 70) {
               this.jump = 1;
             }
@@ -280,6 +282,7 @@ class npcObj {
         }
         else {
           if (this.inAir === 0) {
+            // hard coded because NPC has knowledge of the staircase
             if (this.pos.x < 350 && this.pos.x >= 340) {
               this.jump = 1;
             }
@@ -314,12 +317,12 @@ class npcObj {
       this.velocity.x = 0;
     }
 
-/*     // The player wins when the player character reaches the top of the stairs.
-    if (this.pos.x >= 10 && this.pos.x <= 50 && this.pos.y < 70 && this.gameOver === 0) {
-      this.win = 1;
+    // The player loses when any NPC reaches the second highest step in the stair-case.
+    if (this.pos.x >= 10 && this.pos.x <= 120 && this.pos.y < 100) {
+      gameOver = 1;
     }
 
-    // The player loses if the player falls off the stair hitting the bottom border.
+/*    // The player loses if the player falls off the stair hitting the bottom border.
     if (this.pos.y+27 >= height) {
       this.gameOver = 1;
     }
@@ -334,31 +337,8 @@ class npcObj {
 }
 
 function initNPC() {
-  npcChar = new npcObj(30, 333);
-  //npcChar.win = 0;
-  //npcChar.gameOver = 0;
+  npcChar = [new npcObj(30, 333), new npcObj(80, 303), new npcObj(160, 273)];
 }
-
-/*
-function keyPressed() {
-  // The main player starts at the bottom-left and is controlled with WAD 
-  // where W means to jump, while AD is to move left/right.
-  if (keyCode === 68) { // D
-    mainChar.force.add(walkForce);
-  }
-  if (keyCode === 65) { // A
-    mainChar.force.add(backForce);
-  }
-  if (keyCode === 87 && mainChar.jump === 0) { // W
-    mainChar.force.add(jumpForce);
-    mainChar.jump = 1;
-  }
-}
-
-function keyReleased() {
-  mainChar.force.set(0, 0);
-}
-*/
 
 function keyPressed() {
   // generate a ball when the space-bar is pressed
@@ -367,19 +347,19 @@ function keyPressed() {
   }
 }
 
-/*
 function checkRestart() {
-  if (keyIsDown(13) && (mainChar.win === 0 || mainChar.gameOver === 0)) {
+  if (keyIsDown(13) && (win === 0 || gameOver === 0)) {
     initialize = 1;
   }
 }
-*/
 
 var npcChar;
 var balls = [];
 var gravity, walkForce, backForce, jumpForce, wind;
 var windSpeed = 0.013;
 var initialize = 1;
+var gameOver = 0;
+var win = 0;
 
 function setup() {
   createCanvas(400, 400);
@@ -394,17 +374,21 @@ function setup() {
 
 function draw() {
   // initialize the game
-/*   if (initialize === 1) {
+   if (initialize === 1) {
     initialize = 0;
     initializeTilemap();
-    initMainChar();
+    initNPC();
+    gameOver = 0;
+    win = 0;
   }
- */
+
   background(0);  // black
   displayTilemap();
 
-  npcChar.update();
-  npcChar.draw();
+  for (var i = 0; i < 3; i++) {
+    npcChar[i].update();
+    npcChar[i].draw();
+  }
 
   for (var i = 0; i < balls.length; i++) {
     if (balls[i].valid === 1) {
@@ -414,7 +398,7 @@ function draw() {
 
   }
 
-  /* if (mainChar.gameOver === 1) {
+  if (gameOver === 1) {
     fill(255);
     textStyle(BOLD);
     textFont('Courier New', 40);
@@ -424,7 +408,7 @@ function draw() {
     text("Press ENTER to restart", 90, 260);
     checkRestart();
   }
-  else if (mainChar.win === 1) {
+  /* else if (win === 1) {
     fill(255);
     textStyle(BOLD);
     textFont('Courier New', 40);
