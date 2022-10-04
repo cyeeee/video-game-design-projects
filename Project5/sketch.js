@@ -83,15 +83,21 @@ class ballObj {
     this.size = 15;
     this.mass = this.size/5;
     this.valid = 1;
+    this.angle = 0;
+    this.aVelocity = 0;
   }
 
   draw() {
+    push();
+    translate(this.pos.x, this.pos.y);
+    rotate(this.angle);
     noStroke();
     fill(255, 255, 204);  // light yellow
-    circle(this.pos.x, this.pos.y, this.size);
+    circle(0, 0, this.size);
     fill(255, 102, 102);  // light red
     textSize(15);
-    text("★", this.pos.x-6, this.pos.y+5);
+    text("★", -6, 5);
+    pop();
   }
 
   applyForce(force) {
@@ -110,6 +116,10 @@ class ballObj {
 
     this.velocity.add(this.acceleration);
     this.pos.add(this.velocity);
+
+    // the ball spins while in air or rolling
+    this.aVelocity = this.velocity.mag() * 2;
+    this.angle += this.aVelocity;
     
     // Each ball will bounce on the stair as it hits the step on the stair
     for (var i = 0; i < 35; i++) {
