@@ -157,6 +157,7 @@ class npcObj {
     this.moveLeft = 0;
     this.moveRight = 0;
     this.botHalf = 0;
+    this.dead = 0;
   }
 
   draw() {
@@ -322,17 +323,17 @@ class npcObj {
       gameOver = 1;
     }
 
-/*    // The player loses if the player falls off the stair hitting the bottom border.
+    // The NPC dies when fall off the stairs hitting the bottom border.
     if (this.pos.y+27 >= height) {
-      this.gameOver = 1;
+      this.dead = 1;
     }
 
-    // The player loses when a ball hits the player
+    // When a ball hits the NPC, the NPC dies and disappears.
     for (var i = 0; i < balls.length; i++) {
-      if (this.win === 0 && dist(this.pos.x, this.pos.y, balls[i].pos.x, balls[i].pos.y) < 10) {
-        this.gameOver = 1;
+      if (gameOver === 0 && this.dead === 0 && dist(this.pos.x, this.pos.y, balls[i].pos.x, balls[i].pos.y) < 10) {
+        this.dead = 1;
       }
-    } */
+    } 
   }
 }
 
@@ -359,7 +360,7 @@ var gravity, walkForce, backForce, jumpForce, wind;
 var windSpeed = 0.013;
 var initialize = 1;
 var gameOver = 0;
-var win = 0;
+var win = 1;
 
 function setup() {
   createCanvas(400, 400);
@@ -378,16 +379,20 @@ function draw() {
     initialize = 0;
     initializeTilemap();
     initNPC();
+    balls = [];
     gameOver = 0;
-    win = 0;
   }
 
   background(0);  // black
   displayTilemap();
-
+  
+  win = 1;
   for (var i = 0; i < 3; i++) {
-    npcChar[i].update();
-    npcChar[i].draw();
+    if (npcChar[i].dead === 0) {
+      win = 0;
+      npcChar[i].update();
+      npcChar[i].draw();
+    }
   }
 
   for (var i = 0; i < balls.length; i++) {
@@ -395,7 +400,6 @@ function draw() {
       balls[i].update();
       balls[i].draw();
     }
-
   }
 
   if (gameOver === 1) {
@@ -408,7 +412,7 @@ function draw() {
     text("Press ENTER to restart", 90, 260);
     checkRestart();
   }
-  /* else if (win === 1) {
+  else if (win === 1) {
     fill(255);
     textStyle(BOLD);
     textFont('Courier New', 40);
@@ -417,6 +421,6 @@ function draw() {
     textFont('Courier New', 14);
     text("Press ENTER to restart", 90, 260);
     checkRestart();
-  } */
+  } 
 
 }
