@@ -89,7 +89,9 @@ class ballObj {
     noStroke();
     fill(255, 255, 204);  // light yellow
     circle(this.pos.x, this.pos.y, this.size);
-    //todo
+    fill(255, 102, 102);  // light red
+    textSize(15);
+    text("★", this.pos.x-6, this.pos.y+5);
   }
 
   applyForce(force) {
@@ -283,7 +285,7 @@ function checkRestart() {
 }
 */
 
-var mainChar;
+//var mainChar;
 var balls = [];
 var gravity, walkForce, backForce, jumpForce, wind;
 var windSpeed = 0.013;
