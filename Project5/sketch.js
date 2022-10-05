@@ -3,6 +3,15 @@ Project 5 - NPC Hopper
 Author: Chenyi Wang
 Date: 10/04/22
 
+This project has a tilemap of 400x400 with several staircases.
+There are 3 NPC hoppers start at different locations on the stairs, and will climb upward.
+The player can control the dropping of the balls with the space-bar.
+
+The NPC dies when a ball hits it or fall off the stairs.
+When all NPC characters have been killed, the player wins.
+when any NPC reaches the second highest step in the stair-case, game over.
+
+When the player either wins or loses, if the ENTER key is pressed, the game will restart.
 
 */
 
@@ -344,8 +353,8 @@ class npcObj {
     this.climb();
 
     // stay inside the map
-    if (this.pos.x < 10) {
-      this.pos.x = 10;
+    if (this.pos.x < 20) {
+      this.pos.x = 20;
       this.velocity.x = 0;
     }
     else if (this.pos.x > 390) {
