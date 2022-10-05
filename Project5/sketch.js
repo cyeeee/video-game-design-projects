@@ -85,6 +85,8 @@ class ballObj {
     this.valid = 1;
     this.angle = 0;
     this.aVelocity = 0;
+    this.trajectory = new p5.Vector(0, 0);
+    this.pPos = new p5.Vector(0, 0);  // previous position
   }
 
   draw() {
@@ -113,12 +115,14 @@ class ballObj {
     this.applyForce(windForce);
     var airFriction = p5.Vector.mult(this.velocity, -0.02);
     this.applyForce(airFriction);
-
     this.velocity.add(this.acceleration);
+    
+    this.pPos.set(this.pos.x, this.pos.y);
     this.pos.add(this.velocity);
+    this.trajectory.set(this.pos.x-this.pPos.x, this.pos.y-this.pPos.y);
 
     // the ball spins while in air or rolling
-    this.aVelocity = this.velocity.mag() * 4;
+    this.aVelocity = this.velocity.mag() * 6;
     this.angle += this.aVelocity;
     
     // Each ball will bounce on the stair as it hits the step on the stair
@@ -158,6 +162,7 @@ class npcObj {
     this.moveRight = 0;
     this.botHalf = 0;
     this.dead = 0;
+    this.avoidTarget = new p5.Vector(0, 0);
   }
 
   draw() {
@@ -204,21 +209,28 @@ class npcObj {
     }
   }
 
-  update() {
-    this.move();
-    this.applyForce(this.force);
-    this.applyForce(gravity);
-    this.velocity.add(this.acceleration);
-    this.pos.add(this.velocity);
+  avoidBall() {
+    for (var i = 0; i < balls.length; i++) {
+      var distance = dist(balls[i].pos.x, balls[i].pos.y, this.pos.x, this.pos.y);
+      if (this.botHalf === 0 && balls[i].pos.x < this.pos.x 
+        && distance > 10 && distance < 80) {
+        this.avoidTarget.set(balls[i].trajectory.x, balls[i].trajectory.y);
+        this.avoidTarget.mult(30);
+        this.avoidTarget.x += balls[i].pos.x;
+        this.avoidTarget.y += balls[i].pos.y;
 
-    if (this.pos.y+27 > 230) {
-      this.botHalf = 1;
+        if (this.inAir === 0) {
+          this.velocity.x = 0;
+          if (this.avoidTarget.y > this.pos.y) {
+            this.right = 1;
+          }
+          this.moveLeft = 0;
+        }
+      }
     }
-    if (this.pos.x === 390) {
-      this.botHalf = 0;
-    }
-    
-    // land on the staircases
+  }
+
+  climb() {
     if (this.pos.y+27 > 197 && this.botHalf === 1) {
       for (var i = 30; i < stairs.length; i++) {
         if (this.pos.x >= stairs[i].x && this.pos.x <= stairs[i].x+10) {
@@ -240,19 +252,19 @@ class npcObj {
         else {
           if (this.inAir === 0) {
             // hard coded because NPC has knowledge of the staircase
-            if (this.pos.x > 50 && this.pos.x <= 70) {
+            if (this.pos.x > 45 && this.pos.x <= 70) {
               this.jump = 1;
             }
-            else if (this.pos.x > 130 && this.pos.x <= 140) {
+            else if (this.pos.x > 120 && this.pos.x <= 140) {
               this.jump = 1;
             }
-            else if (this.pos.x > 200 && this.pos.x <= 210) {
+            else if (this.pos.x > 190 && this.pos.x <= 210) {
               this.jump = 1;
             }
-            else if (this.pos.x > 270 && this.pos.x <= 280) {
+            else if (this.pos.x > 260 && this.pos.x <= 280) {
               this.jump = 1;
             }
-            else if (this.pos.x > 340 && this.pos.x <= 350) {
+            else if (this.pos.x > 330 && this.pos.x <= 350) {
               this.jump = 1;
             }
           }
@@ -272,7 +284,10 @@ class npcObj {
             this.right = 0;  
           }
           else {
-            this.left = 0;   
+            this.left = 0;
+          }
+          if (this.velocity.x === 0) {
+            this.moveLeft = 0;
           }
           if (this.pos.y+27 >= stairs[i].y && this.pos.y+27 < stairs[i].y+10) {
             this.pos.y = stairs[i].y-27;
@@ -284,19 +299,19 @@ class npcObj {
         else {
           if (this.inAir === 0) {
             // hard coded because NPC has knowledge of the staircase
-            if (this.pos.x < 350 && this.pos.x >= 340) {
+            if (this.pos.x < 360 && this.pos.x >= 340) {
               this.jump = 1;
             }
-            else if (this.pos.x < 280 && this.pos.x >= 270) {
+            else if (this.pos.x < 290 && this.pos.x >= 270) {
               this.jump = 1;
             }
-            else if (this.pos.x < 210 && this.pos.x >= 200) {
+            else if (this.pos.x < 220 && this.pos.x >= 200) {
               this.jump = 1;
             }
-            else if (this.pos.x < 140 && this.pos.x >= 130) {
+            else if (this.pos.x < 150 && this.pos.x >= 130) {
               this.jump = 1;
             }
-            else if (this.pos.x < 70 && this.pos.x >= 60) {
+            else if (this.pos.x < 80 && this.pos.x >= 60) {
               this.jump = 1;
             }
           }
@@ -307,6 +322,26 @@ class npcObj {
         }
       }
     }
+  }
+
+  update() {
+    if (win === 0 && gameOver === 0) {
+      this.avoidBall();
+    }
+    this.move();
+    this.applyForce(this.force);
+    this.applyForce(gravity);
+    this.velocity.add(this.acceleration);
+    this.pos.add(this.velocity);
+
+    if (this.pos.y+27 > 230) {
+      this.botHalf = 1;
+    }
+    if (this.pos.x === 390) {
+      this.botHalf = 0;
+    }
+    
+    this.climb();
 
     // stay inside the map
     if (this.pos.x < 10) {
@@ -330,7 +365,8 @@ class npcObj {
 
     // When a ball hits the NPC, the NPC dies and disappears.
     for (var i = 0; i < balls.length; i++) {
-      if (gameOver === 0 && this.dead === 0 && dist(this.pos.x, this.pos.y, balls[i].pos.x, balls[i].pos.y) < 10) {
+      if (gameOver === 0 && this.dead === 0 
+        && dist(this.pos.x, this.pos.y, balls[i].pos.x, balls[i].pos.y) < 10) {
         this.dead = 1;
       }
     } 
@@ -357,7 +393,7 @@ function checkRestart() {
 var npcChar;
 var balls = [];
 var gravity, walkForce, backForce, jumpForce, wind;
-var windSpeed = 0.013;
+var windSpeed = 0.018;
 var initialize = 1;
 var gameOver = 0;
 var win = 1;
@@ -365,8 +401,8 @@ var win = 1;
 function setup() {
   createCanvas(400, 400);
   gravity = new p5.Vector(0, 0.15);
-  walkForce = new p5.Vector(0.4, 0);
-  backForce = new p5.Vector(-0.4, 0);
+  walkForce = new p5.Vector(0.6, 0);
+  backForce = new p5.Vector(-0.6, 0);
   jumpForce = new p5.Vector(0, -4);
   wind = new p5.Vector(1, 0);
   initializeTilemap();
