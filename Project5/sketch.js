@@ -9,54 +9,32 @@ The player can control the dropping of the balls with the space-bar.
 
 The NPC dies when a ball hits it or fall off the stairs.
 When all NPC characters have been killed, the player wins.
-when any NPC reaches the second highest step in the stair-case, game over.
+When any NPC reaches the second highest step in the stair-case, game over.
 
 When the player either wins or loses, if the ENTER key is pressed, the game will restart.
 
+Note: Each NPC has knowledge of the staircase, as well as the positions of all the balls.
+The NPC will avoid the ball by taking a step back when it is not in the jump state.
+When the ball is on the same step as the NPC and is very close to the NPC, the NPC will jump over the ball.
 */
 
 var tileMap = [
-  "                                        ",
-  "                                        ",
-  "                                        ",
-  "                                        ",
-  "                                        ",
-  "                                        ",
-  "                                        ",
-  "ssssss                                  ",
-  "                                        ",
-  "                                        ",
-  "       ssssss                           ",
-  "                                        ",
-  "                                        ",
-  "              ssssss                    ",
-  "                                        ",
-  "                                        ",
-  "                     ssssss             ",
-  "                                        ",
-  "                                        ",
-  "                            ssssss      ",
-  "                                        ",
-  "                                        ",
-  "                                   sssss",
-  "                                        ",
-  "                                        ",
-  "                            ssssss      ",
-  "                                        ",
-  "                                        ",
-  "                     ssssss             ",
-  "                                        ",
-  "                                        ",
-  "              ssssss                    ",
-  "                                        ",
-  "                                        ",
-  "       ssssss                           ",
-  "                                        ",
-  "                                        ",
-  "ssssss                                  ",
-  "                                        ",
-  "                                        ",
-  "                                        ",];
+  "      ",
+  "      ",
+  "s     ",
+  " s    ",
+  "  s   ",
+  "   s  ",
+  "    s ",
+  "     s",
+  "    s ",
+  "   s  ",
+  "  s   ",
+  " s    ",
+  "s     ",
+  "      ",
+  "      ",
+  "      ",];
 
 class stairObj {
   constructor(x, y) {
@@ -70,7 +48,7 @@ function initializeTilemap() {
   for (var i = 0; i < tileMap.length; i++) {
     for (var j = 0; j < tileMap[i].length; j++) {
       if (tileMap[i][j] === 's') {
-        stairs.push(new stairObj(j*10, i*10));
+        stairs.push(new stairObj(j*68, i*30));
       }
     }
   }
@@ -80,7 +58,7 @@ function displayTilemap() {
   fill(150);  // grey
   noStroke();
   for (var i = 0; i < stairs.length; i++) {
-    square(stairs[i].x, stairs[i].y, 10);
+    rect(stairs[i].x, stairs[i].y, 60, 10);
   }
 }
 
@@ -135,8 +113,8 @@ class ballObj {
     this.angle += this.aVelocity;
     
     // Each ball will bounce on the stair as it hits the step on the stair
-    for (var i = 0; i < 35; i++) {
-      if (this.pos.x >= stairs[i].x && this.pos.x <= stairs[i].x+10) {
+    for (var i = 0; i < stairs.length; i++) {
+      if (this.pos.x >= stairs[i].x && this.pos.x <= stairs[i].x+60) {
         if (this.pos.y > (stairs[i].y-this.size/2)) {
           this.pos.y = stairs[i].y-this.size/2;
           this.velocity.y *= -1;
@@ -167,8 +145,6 @@ class npcObj {
     this.inAir = 0;
     this.left = 0;
     this.right = 0;
-    this.moveLeft = 0;
-    this.moveRight = 0;
     this.botHalf = 0;
     this.dead = 0;
     this.avoidTarget = new p5.Vector(0, 0);
@@ -205,12 +181,12 @@ class npcObj {
 
   move() {
     if (this.left === 1) {
-      this.force.add(backForce);
-      this.moveLeft = 1;
+      this.velocity.x = 0;
+      this.force.set(backForce);
     }
     if (this.right === 1) {
-      this.force.add(walkForce);
-      this.moveRight = 1;
+      this.velocity.x = 0;
+      this.force.set(walkForce);
     }
     if (this.jump === 1) {
       this.force.add(jumpForce);
@@ -218,62 +194,50 @@ class npcObj {
     }
   }
 
-  avoidBall() {
+   avoidBall() {
     for (var i = 0; i < balls.length; i++) {
       var distance = dist(balls[i].pos.x, balls[i].pos.y, this.pos.x, this.pos.y);
       if (this.botHalf === 0 && balls[i].pos.x < this.pos.x 
-        && distance > 10 && distance < 80) {
+        && distance > 10 && distance < 70) {
         this.avoidTarget.set(balls[i].trajectory.x, balls[i].trajectory.y);
-        this.avoidTarget.mult(30);
+        this.avoidTarget.mult(15);
         this.avoidTarget.x += balls[i].pos.x;
         this.avoidTarget.y += balls[i].pos.y;
 
         if (this.inAir === 0) {
-          this.velocity.x = 0;
-          if (this.avoidTarget.y > this.pos.y) {
-            this.right = 1;
+          this.left = 0;
+          if (this.avoidTarget.x < this.pos.x) {
+            if ((this.pos.x-this.avoidTarget.x) < 3 && this.avoidTarget.y > this.pos.y + 20) {
+              this.jump = 1;
+            }
+            if (this.avoidTarget.y > this.pos.y) {
+              this.right = 1;
+            }
           }
-          this.moveLeft = 0;
+          else {
+            this.left = 1;
+          }
         }
       }
     }
-  }
+  } 
 
   climb() {
-    if (this.pos.y+27 > 197 && this.botHalf === 1) {
-      for (var i = 30; i < stairs.length; i++) {
-        if (this.pos.x >= stairs[i].x && this.pos.x <= stairs[i].x+10) {
-          if (this.moveRight === 0) {
-            this.moveLeft = 0;
-            this.left = 0;
-            this.right = 1;   
-          }
-          else {
-            this.right = 0;   
-          }
+    if (this.botHalf === 1) {
+      for (var i = 5; i < stairs.length; i++) {
+        if (this.pos.x >= stairs[i].x && this.pos.x <= stairs[i].x+60) {
           if (this.pos.y+27 >= stairs[i].y && this.pos.y+27 < stairs[i].y+10) {
             this.pos.y = stairs[i].y-27;
             this.velocity.y = 0;  // reset velocity on landing
             this.jump = 0;
-            this.inAir = 0
+            this.inAir = 0;
           }
+          this.left = 0;
+          this.right = 1;
         }
         else {
-          if (this.inAir === 0) {
-            // hard coded because NPC has knowledge of the staircase
-            if (this.pos.x > 45 && this.pos.x <= 70) {
-              this.jump = 1;
-            }
-            else if (this.pos.x > 120 && this.pos.x <= 140) {
-              this.jump = 1;
-            }
-            else if (this.pos.x > 190 && this.pos.x <= 210) {
-              this.jump = 1;
-            }
-            else if (this.pos.x > 260 && this.pos.x <= 280) {
-              this.jump = 1;
-            }
-            else if (this.pos.x > 330 && this.pos.x <= 350) {
+          if (this.inAir === 0){
+            if (this.pos.x < stairs[i].x) {
               this.jump = 1;
             }
           }
@@ -285,42 +249,20 @@ class npcObj {
       }
     }
     else {
-      for (var i = 0; i < 35; i++) {
-        if (this.pos.x >= stairs[i].x && this.pos.x <= stairs[i].x+10) {
-          if (this.moveLeft === 0) {
-            this.moveRight = 0;
-            this.left = 1;
-            this.right = 0;  
-          }
-          else {
-            this.left = 0;
-          }
-          if (this.velocity.x === 0) {
-            this.moveLeft = 0;
-          }
+      for (var i = 0; i < 6; i++) {
+        if (this.pos.x >= stairs[i].x && this.pos.x <= stairs[i].x+60) {
           if (this.pos.y+27 >= stairs[i].y && this.pos.y+27 < stairs[i].y+10) {
             this.pos.y = stairs[i].y-27;
             this.velocity.y = 0;  // reset velocity on landing
             this.jump = 0;
             this.inAir = 0;
           }
+          this.right = 0;
+          this.left = 1;
         }
         else {
-          if (this.inAir === 0) {
-            // hard coded because NPC has knowledge of the staircase
-            if (this.pos.x < 360 && this.pos.x >= 340) {
-              this.jump = 1;
-            }
-            else if (this.pos.x < 290 && this.pos.x >= 270) {
-              this.jump = 1;
-            }
-            else if (this.pos.x < 220 && this.pos.x >= 200) {
-              this.jump = 1;
-            }
-            else if (this.pos.x < 150 && this.pos.x >= 130) {
-              this.jump = 1;
-            }
-            else if (this.pos.x < 80 && this.pos.x >= 60) {
+          if (this.inAir === 0){
+            if (this.pos.x > stairs[i].x) {
               this.jump = 1;
             }
           }
@@ -336,7 +278,7 @@ class npcObj {
   update() {
     if (win === 0 && gameOver === 0) {
       this.avoidBall();
-    }
+    } 
     this.move();
     this.applyForce(this.force);
     this.applyForce(gravity);
@@ -346,22 +288,28 @@ class npcObj {
     if (this.pos.y+27 > 230) {
       this.botHalf = 1;
     }
-    if (this.pos.x === 390) {
+    if (this.pos.x >= 385) {
       this.botHalf = 0;
     }
     
     this.climb();
+    this.stay();
+    this.checkState();
+  }
 
+  stay() {
     // stay inside the map
-    if (this.pos.x < 20) {
-      this.pos.x = 20;
+    if (this.pos.x < 15) {
+      this.pos.x = 15;
       this.velocity.x = 0;
     }
     else if (this.pos.x > 390) {
       this.pos.x = 390;
       this.velocity.x = 0;
     }
+  }
 
+  checkState() {
     // The player loses when any NPC reaches the second highest step in the stair-case.
     if (this.pos.x >= 10 && this.pos.x <= 120 && this.pos.y < 100) {
       gameOver = 1;
@@ -375,7 +323,7 @@ class npcObj {
     // When a ball hits the NPC, the NPC dies and disappears.
     for (var i = 0; i < balls.length; i++) {
       if (gameOver === 0 && this.dead === 0 
-        && dist(this.pos.x, this.pos.y, balls[i].pos.x, balls[i].pos.y) < 10) {
+        && dist(this.pos.x, this.pos.y, balls[i].pos.x, balls[i].pos.y) < 15) {
         this.dead = 1;
       }
     } 
@@ -419,14 +367,14 @@ function setup() {
 }
 
 function draw() {
-  // initialize the game
+   // initialize the game
    if (initialize === 1) {
     initialize = 0;
     initializeTilemap();
     initNPC();
     balls = [];
     gameOver = 0;
-  }
+  } 
 
   background(0);  // black
   displayTilemap();
@@ -438,7 +386,7 @@ function draw() {
       npcChar[i].update();
       npcChar[i].draw();
     }
-  }
+  } 
 
   for (var i = 0; i < balls.length; i++) {
     if (balls[i].valid === 1) {
@@ -447,7 +395,7 @@ function draw() {
     }
   }
 
-  if (gameOver === 1) {
+   if (gameOver === 1) {
     fill(255);
     textStyle(BOLD);
     textFont('Courier New', 40);
@@ -466,6 +414,6 @@ function draw() {
     textFont('Courier New', 14);
     text("Press ENTER to restart", 90, 260);
     checkRestart();
-  } 
+  }  
 
 }
