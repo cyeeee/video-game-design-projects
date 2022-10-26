@@ -1,4 +1,4 @@
-#Project 8 - Tropical Fish Aquarium
+# Project 8 - Tropical Fish Aquarium
 
 The learning objectives for this project include side-scrolling, splines, subdivision, particle systems, etc.
 
