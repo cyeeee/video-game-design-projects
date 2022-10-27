@@ -16,7 +16,7 @@ class seaweedObj {
     }
   
     draw() {
-      stroke(10, 90, 10);   // dark green
+      stroke(0, 60, 0);   // dark green
       fill(10, 90, 10);
       bezier(this.x, this.y, this.cx1, this.cy1, this.cx2, this.cy2, this.x1, this.y1);
       this.sway();
@@ -48,7 +48,7 @@ class rockObj {
     }
 
     draw() {
-        noStroke();
+        stroke(80);
         fill(this.color);
         ellipse(this.x, this.y, this.w, this.h);
     }
