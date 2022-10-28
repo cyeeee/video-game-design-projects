@@ -95,14 +95,20 @@ class fish1Obj {
         if (this.x > 1700/this.scale) {
             this.out = 1;
         } 
-        this.x += dx;
+        if (dx > 0) {
+            this.x += dx;
+        }
         this.y += dy;
         for (var i = 0; i < this.body.length; i++) {
-            this.body[i].x += dx;
+            if (dx > 0) {
+                this.body[i].x += dx;
+            }
             this.body[i].y += dy;
         }
         for (var i = 0; i < this.tail1.length; i++) {
-            this.tail1[i].x += dx;
+            if (dx > 0) {
+                this.tail1[i].x += dx;
+            }
             this.tail1[i].y += dy;
         }  
     }
@@ -301,10 +307,14 @@ class fish3Obj {
         if (this.x > 1700/this.scale) {
             this.out = 1;
         } 
-        this.x += dx;
+        if (dx > 0) {
+            this.x += dx;
+        }
         this.y += dy;
         for (var i = 0; i < this.body.length; i++) {
-            this.body[i].x += dx;
+            if (dx > 0) {
+                this.body[i].x += dx;
+            }
             this.body[i].y += dy;
         }      
     }
