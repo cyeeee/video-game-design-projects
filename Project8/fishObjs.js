@@ -192,6 +192,81 @@ class fish2Obj {
     }
 } 
 
+class fish3Obj {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.body = [new p5.Vector(this.x-80, this.y), new p5.Vector(this.x+30, this.y-40), new p5.Vector(this.x+130, this.y), new p5.Vector(this.x+50, this.y+40), new p5.Vector(this.x-50, this.y+10),];
+        this.itBody = 0;
+        this.currFrame = frameCount;
+        this.i = 0;
+    }
+
+    move() {
+        this.x += 0.5;
+        for (var i = 0; i < this.body.length; i++) {
+            this.body[i].x += 0.5;
+        }
+    }
+
+    draw() {
+        this.move();
+        // tail
+        stroke(0);
+        strokeWeight(2);
+        noFill();
+        switch (this.i) {
+            case 0:
+                curve(this.x-900, this.y-50, this.x-130, this.y-45, this.x-130, this.y+55, this.x-900, this.y+70);
+                curve(this.x-500, this.y-50, this.x-130, this.y-45, this.x-130, this.y+55, this.x-500, this.y+70);
+                break;
+            case 1:
+                curve(this.x-700, this.y-50, this.x-120, this.y-50, this.x-110, this.y+35, this.x-750, this.y+70);
+                curve(this.x-400, this.y-50, this.x-120, this.y-50, this.x-110, this.y+35, this.x-400, this.y+70);
+                break;
+        } 
+        
+        if (this.currFrame < (frameCount - 50)) {
+            this.currFrame = frameCount;
+            this.i++;
+            if (this.i > 1) {
+            this.i = 0;
+            }
+        } 
+
+        noFill();
+        curve(this.x+100, this.y, this.x+50, this.y+30, this.x+10, this.y+28, this.x+150, this.y-100);
+        
+        // body
+        fill(250, 250, 130);  // light yellow
+        beginShape();
+        for (var i = 0; i < this.body.length; i++) {
+            vertex(this.body[i].x, this.body[i].y);
+        }
+        vertex(this.body[0].x, this.body[0].y);
+        endShape();
+        if (this.itBody < 5) {
+            subdivide(this.body);
+            this.itBody++;
+        }
+
+        fill(90, 240, 240);
+        curve(this.x+250, this.y-50, this.x+65, this.y+15, this.x+55, this.y, this.x+250, this.y);
+        
+        // eye
+        strokeWeight(1);
+        fill(255);
+        circle(this.x+88, this.y, 10);
+        fill(0);
+        circle(this.x+89, this.y, 6);
+        // mouth
+        noFill();
+        curve(this.x+105, this.y-5, this.x+103, this.y+12, this.x+90, this.y+12, this.x+95, this.y-10);
+      
+    }
+} 
+
+
 var p2 = [];
 var splitPoints = function (points) {
     p2.splice(0, p2.length);

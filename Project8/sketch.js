@@ -7,7 +7,7 @@ Date: 10/26/22
 
 
 var aquarium;
-var fish1, fish2;
+var fish1, fish2, fish3;
 
 function setup() {
   createCanvas(400, 400);
@@ -15,6 +15,8 @@ function setup() {
   aquarium.initialize();
   fish1 = new fish1Obj(200, 200);
   fish2 = new fish2Obj(400, 400);
+  fish3 = new fish3Obj(600, 600);
+
 }
 
 function draw() {
@@ -28,6 +30,7 @@ function draw() {
   scale(0.2);
   fish1.draw();
   fish2.draw();
+  fish3.draw();
   pop();
 
   pop();
