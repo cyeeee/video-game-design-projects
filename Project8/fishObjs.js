@@ -23,30 +23,21 @@ class fish1Obj {
         for (var i = 0; i < this.body.length; i++) {
             this.body[i].x += this.xDir;
             this.body[i].y += this.yDir;
-            /* if (this.body[i].x > 1700/this.scale) {
-                this.body[i].x = 200;
-            } */
         }
         for (var i = 0; i < this.tail1.length; i++) {
             this.tail1[i].x += this.xDir;
             this.tail1[i].y += this.yDir;
-            /* if (this.tail1[i].x > 1700/this.scale) {
-                this.tail1[i].x = 200;
-            } */
         }
         for (var i = 0; i < this.tail2.length; i++) {
             this.tail2[i].x += this.xDir;
             this.tail2[i].y += this.yDir;
-            /* if (this.tail2[i].x > 1700/this.scale) {
-                this.tail2[i].x = 200;
-            } */
         }
 
         /* if (this.x > 1700/this.scale) {
             this.x = 200;
         } */
 
-        if (this.y <= 20/this.scale || this.y >= 380/this.scale) {
+        if (this.y <= 15/this.scale || this.y >= 390/this.scale) {
             this.yDir = -this.yDir;
         }
     }
@@ -132,34 +123,36 @@ class fish2Obj {
         this.itTail2 = 0;
         this.currFrame = frameCount;
         this.i = 0;
+        this.xDir = 0.4;
         this.yDir = random(-0.3, 0.3);
+        this.scale = 0.2;
     }
 
     move() {
-        this.x += 0.4;
+        this.x += this.xDir;
         this.y += this.yDir;
         for (var i = 0; i < this.body.length; i++) {
-            this.body[i].x += 0.4;
+            this.body[i].x += this.xDir;
             this.body[i].y += this.yDir;
         }
         for (var i = 0; i < this.tail1.length; i++) {
-            this.tail1[i].x += 0.4;
+            this.tail1[i].x += this.xDir;
             this.tail1[i].y += this.yDir;
         }
         for (var i = 0; i < this.tail2.length; i++) {
-            this.tail2[i].x += 0.4;
+            this.tail2[i].x += this.xDir;
             this.tail2[i].y += this.yDir;
         } 
 
-        /* if (this.y <= 50 || this.y >= 350) {
+        if (this.y <= 15/this.scale || this.y >= 385/this.scale) {
             this.yDir = -this.yDir;
-        } */
+        }
     }
 
     draw() {
         this.move();
         push();
-        scale(0.2); 
+        scale(this.scale); 
         // tail
         stroke(0);
         fill(255, 120, 0);  // orange
@@ -237,22 +230,28 @@ class fish3Obj {
         this.itBody = 0;
         this.currFrame = frameCount;
         this.i = 0;
+        this.xDir = 0.5;
         this.yDir = random(-0.2, 0.2);
+        this.scale = 0.2;
     }
 
     move() {
-        this.x += 0.5;
+        this.x += this.xDir;
         this.y += this.yDir;
         for (var i = 0; i < this.body.length; i++) {
-            this.body[i].x += 0.5;
+            this.body[i].x += this.xDir;
             this.body[i].y += this.yDir;
+        }
+
+        if (this.y <= 15/this.scale || this.y >= 390/this.scale) {
+            this.yDir = -this.yDir;
         }
     }
 
     draw() {
         this.move();
         push();
-        scale(0.2);
+        scale(this.scale);
         // tail
         stroke(0);
         strokeWeight(2);
