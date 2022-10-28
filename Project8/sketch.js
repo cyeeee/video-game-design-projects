@@ -3,6 +3,16 @@ Project 8 - Tropical Fish Aquarium
 Author: Chenyi Wang
 Date: 10/26/22
 
+The aquarium in this project is 1500 pixels wide and 400 pixels long.
+The screen can be scrolled by pressing left and right arrow keys.
+
+There are seaweeds and rocks at the bottom of the aquarium.
+There are bubbles blown out of the rocks periodically.
+
+There are 3 different types of tropical fish, and their tails are animated.
+The size of each fish is different.
+There are 3 schools of fish swim together and another 10 individual fish swim by itself.
+
 */
 
 var aquarium;
@@ -20,7 +30,7 @@ function setup() {
   upForce = new p5.Vector(0, -0.003);
   aquarium = new aquariumObj();
   aquarium.initialize();
-  
+
   bubbles.push(new bubbleObj(0, 400));
   bubbles.push(new bubbleObj(380, 400));
   bubbles.push(new bubbleObj(680, 400));
