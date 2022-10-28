@@ -10,36 +10,12 @@ class fish1Obj {
         this.itTail1 = 0;
         this.currFrame = frameCount;
         this.i = 0;
-        this.xDir = 0.5;
-        this.yDir = random(-0.2, 0.2);
         this.scale = random(0.1, 0.2);
         this.angle = 0;
         this.out = 0;
     }
 
-    move() {
-        this.x += this.xDir;
-        this.y += this.yDir;
-        for (var i = 0; i < this.body.length; i++) {
-            this.body[i].x += this.xDir;
-            this.body[i].y += this.yDir;
-        }
-        for (var i = 0; i < this.tail1.length; i++) {
-            this.tail1[i].x += this.xDir;
-            this.tail1[i].y += this.yDir;
-        }
-
-        if (this.x > 1700/this.scale) {
-            this.out = 1;
-        } 
-
-        if (this.y <= 15/this.scale || this.y >= 390/this.scale) {
-            this.yDir = -this.yDir;
-        }
-    }
-
     draw() {
-        //this.move();
         push();
         scale(this.scale);
         // tail
@@ -107,11 +83,14 @@ class fish1Obj {
     }
 
     swarm() {
-        this.angle += random(-fiveDegrees, fiveDegrees);
-        var dx = abs(cos(this.angle)/2);
-        var dy = sin(this.angle)/3;
-        if (this.y <= 15/this.scale || this.y >= 390/this.scale) {
-            dy = -dy;
+        this.angle += random(-tenDegrees, tenDegrees);
+        var dx = cos(this.angle)*1.5;
+        var dy = sin(this.angle);
+        if (this.y <= 15/this.scale) {
+            dy = abs(dy);
+        }
+        if (this.y >= 385/this.scale) {
+            dy = -abs(dy);
         }
         if (this.x > 1700/this.scale) {
             this.out = 1;
@@ -139,8 +118,8 @@ class fish2Obj {
         this.itTail1 = 0;
         this.currFrame = frameCount;
         this.i = 0;
-        this.xDir = 0.4;
-        this.yDir = random(-0.3, 0.3);
+        this.xDir = random(1, 1.5);
+        this.yDir = random(-0.5, 0.5);
         this.scale = random(0.1, 0.2);
         this.out = 0;
     }
@@ -247,32 +226,12 @@ class fish3Obj {
         this.itBody = 0;
         this.currFrame = frameCount;
         this.i = 0;
-        this.xDir = 0.5;
-        this.yDir = random(-0.2, 0.2);
         this.scale = random(0.1, 0.2);
         this.angle = 0;
         this.out = 0;
     }
 
-    move() {
-        this.x += this.xDir;
-        this.y += this.yDir;
-        for (var i = 0; i < this.body.length; i++) {
-            this.body[i].x += this.xDir;
-            this.body[i].y += this.yDir;
-        }
-
-        if (this.x > 1700/this.scale) {
-            this.out = 1;
-        } 
-
-        if (this.y <= 15/this.scale || this.y >= 390/this.scale) {
-            this.yDir = -this.yDir;
-        }
-    }
-
     draw() {
-        //this.move();
         push();
         scale(this.scale);
         // tail
@@ -330,12 +289,18 @@ class fish3Obj {
     }
 
     swarm() {
-        this.angle += random(-fiveDegrees, fiveDegrees);
-        var dx = cos(this.angle);
-        var dy = sin(this.angle)/3;
-        if (this.y <= 15/this.scale || this.y >= 390/this.scale) {
-            dy = -dy;
+        this.angle += random(-tenDegrees, tenDegrees);
+        var dx = cos(this.angle)*1.8;
+        var dy = sin(this.angle);
+        if (this.y <= 15/this.scale) {
+            dy = abs(dy);
         }
+        if (this.y >= 385/this.scale) {
+            dy = -abs(dy);
+        }
+        if (this.x > 1700/this.scale) {
+            this.out = 1;
+        } 
         this.x += dx;
         this.y += dy;
         for (var i = 0; i < this.body.length; i++) {

@@ -5,15 +5,19 @@ class swarm1Obj {
         this.fishs = [];
         for (var i = 0; i < 4; i++) {
             for (var j = 0; j < 3; j++) {
-                this.fishs.push(new fish3Obj(100+i*200, 500+j*100));
+                this.fishs.push(new fish3Obj(i*200, 500+j*100));
             }
         }
+        this.out = 0;
     }
 
     display() {
         for (var i = 0; i < this.fishs.length; i++) {
             this.fishs[i].draw();
             this.fishs[i].swarm();
+        }
+        if (this.fishs[1].out === 1) {
+            this.out = 1;
         }
     }
 
@@ -28,15 +32,19 @@ class swarm2Obj {
         this.fishs = [];
         for (var i = 0; i < 3; i++) {
             for (var j = 0; j < 3; j++) {
-                this.fishs.push(new fish3Obj(4000, 1500));
+                this.fishs.push(new fish3Obj(1200+i*200, 1200+j*200));
             }
         }
+        this.out = 0;
     }
 
     display() {
         for (var i = 0; i < this.fishs.length; i++) {
             this.fishs[i].draw();
             this.fishs[i].swarm();
+        }
+        if (this.fishs[1].out === 1) {
+            this.out = 1;
         }
     }
 
@@ -51,15 +59,19 @@ class swarm3Obj {
         this.fishs = [];
         for (var i = 0; i < 4; i++) {
             for (var j = 0; j < 2; j++) {
-                this.fishs.push(new fish1Obj(1000+i*50, 800+j*100));
+                this.fishs.push(new fish1Obj(i*200, 1800+j*100));
             }
         }
+        this.out = 0;
     }
 
     display() {
         for (var i = 0; i < this.fishs.length; i++) {
             this.fishs[i].draw();
             this.fishs[i].swarm();
+        }
+        if (this.fishs[1].out === 1) {
+            this.out = 1;
         }
     }
 
