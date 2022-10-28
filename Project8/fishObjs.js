@@ -6,15 +6,15 @@ class fish1Obj {
         this.y = y;
         this.body = [new p5.Vector(this.x-50, this.y+10), new p5.Vector(this.x+100, this.y-50), new p5.Vector(this.x+150, this.y-10), new p5.Vector(this.x+155, this.y), new p5.Vector(this.x+150, this.y+10), new p5.Vector(this.x+80, this.y+30), new p5.Vector(this.x+30, this.y+10),];
         this.tail1 = [new p5.Vector(this.x+30, this.y-20), new p5.Vector(this.x-50, this.y-80), new p5.Vector(this.x-100, this.y-70), new p5.Vector(this.x-80, this.y-30), new p5.Vector(this.x-170, this.y), new p5.Vector(this.x-100, this.y+50), new p5.Vector(this.x-40, this.y+40), new p5.Vector(this.x+50, this.y+20),];
-        this.tail2 = [new p5.Vector(this.x+30, this.y-20), new p5.Vector(this.x-30, this.y-90), new p5.Vector(this.x-80, this.y-70), new p5.Vector(this.y-50, this.y-30), new p5.Vector(this.x-120, this.y), new p5.Vector(this.x-100, this.y+30), new p5.Vector(this.x-40, this.y+40), new p5.Vector(this.x+50, this.y+20), ];
         this.itBody = 0;
         this.itTail1 = 0;
-        this.itTail2 = 0;
         this.currFrame = frameCount;
         this.i = 0;
         this.xDir = 0.5;
         this.yDir = random(-0.2, 0.2);
-        this.scale = 0.2;
+        this.scale = random(0.1, 0.2);
+        this.angle = 0;
+        this.out = 0;
     }
 
     move() {
@@ -28,14 +28,10 @@ class fish1Obj {
             this.tail1[i].x += this.xDir;
             this.tail1[i].y += this.yDir;
         }
-        for (var i = 0; i < this.tail2.length; i++) {
-            this.tail2[i].x += this.xDir;
-            this.tail2[i].y += this.yDir;
-        }
 
-        /* if (this.x > 1700/this.scale) {
-            this.x = 200;
-        } */
+        if (this.x > 1700/this.scale) {
+            this.out = 1;
+        } 
 
         if (this.y <= 15/this.scale || this.y >= 390/this.scale) {
             this.yDir = -this.yDir;
@@ -43,7 +39,7 @@ class fish1Obj {
     }
 
     draw() {
-        this.move();
+        //this.move();
         push();
         scale(this.scale);
         // tail
@@ -64,14 +60,14 @@ class fish1Obj {
                 break;
             case 1:
                 beginShape();
-                for (var i = 0; i < this.tail2.length; i++) {
-                    vertex(this.tail2[i].x, this.tail2[i].y);
+                for (var i = 0; i < this.tail1.length; i++) {
+                    vertex(this.tail1[i].x+20, this.tail1[i].y-10);
                 }
-                vertex(this.tail2[0].x, this.tail2[0].y);
+                vertex(this.tail1[0].x+20, this.tail1[0].y-10);
                 endShape();
-                if (this.itTail2 < 5) {
-                    subdivide(this.tail2);
-                    this.itTail2++;
+                if (this.itTail1 < 5) {
+                    subdivide(this.tail1);
+                    this.itTail1++;
                 }
                 break;
         }
@@ -109,6 +105,28 @@ class fish1Obj {
         curve(this.x+155, this.y-15, this.x+153, this.y+2, this.x+140, this.y+2, this.x+145, this.y-20);
         pop();
     }
+
+    swarm() {
+        this.angle += random(-fiveDegrees, fiveDegrees);
+        var dx = abs(cos(this.angle)/2);
+        var dy = sin(this.angle)/3;
+        if (this.y <= 15/this.scale || this.y >= 390/this.scale) {
+            dy = -dy;
+        }
+        if (this.x > 1700/this.scale) {
+            this.out = 1;
+        } 
+        this.x += dx;
+        this.y += dy;
+        for (var i = 0; i < this.body.length; i++) {
+            this.body[i].x += dx;
+            this.body[i].y += dy;
+        }
+        for (var i = 0; i < this.tail1.length; i++) {
+            this.tail1[i].x += dx;
+            this.tail1[i].y += dy;
+        }  
+    }
 }
 
 class fish2Obj {
@@ -117,15 +135,14 @@ class fish2Obj {
         this.y = y;
         this.body = [new p5.Vector(this.x-130, this.y), new p5.Vector(this.x+30, this.y-70), new p5.Vector(this.x+150, this.y-10), new p5.Vector(this.x+105, this.y+30), new p5.Vector(this.x+40, this.y+50), new p5.Vector(this.x-30, this.y+20),];
         this.tail1 = [new p5.Vector(this.x-50, this.y), new p5.Vector(this.x-90, this.y-30), new p5.Vector(this.x-130, this.y-50), new p5.Vector(this.x-150, this.y-30), new p5.Vector(this.x-140, this.y+30), new p5.Vector(this.x-110, this.y+30),];
-        this.tail2 = [new p5.Vector(this.x-50, this.y+5), new p5.Vector(this.x-60, this.y-35), new p5.Vector(this.x-100, this.y-55), new p5.Vector(this.y-120, this.y-35), new p5.Vector(this.x-110, this.y+25), new p5.Vector(this.x-80, this.y+25),];
         this.itBody = 0;
         this.itTail1 = 0;
-        this.itTail2 = 0;
         this.currFrame = frameCount;
         this.i = 0;
         this.xDir = 0.4;
         this.yDir = random(-0.3, 0.3);
-        this.scale = 0.2;
+        this.scale = random(0.1, 0.2);
+        this.out = 0;
     }
 
     move() {
@@ -139,9 +156,9 @@ class fish2Obj {
             this.tail1[i].x += this.xDir;
             this.tail1[i].y += this.yDir;
         }
-        for (var i = 0; i < this.tail2.length; i++) {
-            this.tail2[i].x += this.xDir;
-            this.tail2[i].y += this.yDir;
+
+        if (this.x > 1700/this.scale) {
+            this.out = 1;
         } 
 
         if (this.y <= 15/this.scale || this.y >= 385/this.scale) {
@@ -150,7 +167,7 @@ class fish2Obj {
     }
 
     draw() {
-        this.move();
+        //this.move();
         push();
         scale(this.scale); 
         // tail
@@ -171,14 +188,14 @@ class fish2Obj {
                 break;
             case 1:
                 beginShape();
-                for (var i = 0; i < this.tail2.length; i++) {
-                    vertex(this.tail2[i].x, this.tail2[i].y);
+                for (var i = 0; i < this.tail1.length; i++) {
+                    vertex(this.tail1[i].x+10, this.tail1[i].y-5);
                 }
-                vertex(this.tail2[0].x, this.tail2[0].y);
+                vertex(this.tail1[0].x+10, this.tail1[0].y-5);
                 endShape();
-                if (this.itTail2 < 5) {
-                    subdivide(this.tail2);
-                    this.itTail2++;
+                if (this.itTail1 < 5) {
+                    subdivide(this.tail1);
+                    this.itTail1++;
                 }
                 break;
         } 
@@ -232,7 +249,9 @@ class fish3Obj {
         this.i = 0;
         this.xDir = 0.5;
         this.yDir = random(-0.2, 0.2);
-        this.scale = 0.2;
+        this.scale = random(0.1, 0.2);
+        this.angle = 0;
+        this.out = 0;
     }
 
     move() {
@@ -243,13 +262,17 @@ class fish3Obj {
             this.body[i].y += this.yDir;
         }
 
+        if (this.x > 1700/this.scale) {
+            this.out = 1;
+        } 
+
         if (this.y <= 15/this.scale || this.y >= 390/this.scale) {
             this.yDir = -this.yDir;
         }
     }
 
     draw() {
-        this.move();
+        //this.move();
         push();
         scale(this.scale);
         // tail
@@ -304,6 +327,21 @@ class fish3Obj {
         noFill();
         curve(this.x+105, this.y-5, this.x+103, this.y+12, this.x+90, this.y+12, this.x+95, this.y-10);
         pop();
+    }
+
+    swarm() {
+        this.angle += random(-fiveDegrees, fiveDegrees);
+        var dx = cos(this.angle);
+        var dy = sin(this.angle)/3;
+        if (this.y <= 15/this.scale || this.y >= 390/this.scale) {
+            dy = -dy;
+        }
+        this.x += dx;
+        this.y += dy;
+        for (var i = 0; i < this.body.length; i++) {
+            this.body[i].x += dx;
+            this.body[i].y += dy;
+        }      
     }
 } 
 
