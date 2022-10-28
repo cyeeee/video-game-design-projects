@@ -12,23 +12,49 @@ class fish1Obj {
         this.itTail2 = 0;
         this.currFrame = frameCount;
         this.i = 0;
+        this.xDir = 0.5;
+        this.yDir = random(-0.2, 0.2);
+        this.scale = 0.2;
     }
 
     move() {
-        this.x += 0.5;
+        this.x += this.xDir;
+        this.y += this.yDir;
         for (var i = 0; i < this.body.length; i++) {
-            this.body[i].x += 0.5;
+            this.body[i].x += this.xDir;
+            this.body[i].y += this.yDir;
+            /* if (this.body[i].x > 1700/this.scale) {
+                this.body[i].x = 200;
+            } */
         }
         for (var i = 0; i < this.tail1.length; i++) {
-            this.tail1[i].x += 0.5;
+            this.tail1[i].x += this.xDir;
+            this.tail1[i].y += this.yDir;
+            /* if (this.tail1[i].x > 1700/this.scale) {
+                this.tail1[i].x = 200;
+            } */
         }
         for (var i = 0; i < this.tail2.length; i++) {
-            this.tail2[i].x += 0.5;
+            this.tail2[i].x += this.xDir;
+            this.tail2[i].y += this.yDir;
+            /* if (this.tail2[i].x > 1700/this.scale) {
+                this.tail2[i].x = 200;
+            } */
+        }
+
+        /* if (this.x > 1700/this.scale) {
+            this.x = 200;
+        } */
+
+        if (this.y <= 20/this.scale || this.y >= 380/this.scale) {
+            this.yDir = -this.yDir;
         }
     }
 
     draw() {
         this.move();
+        push();
+        scale(this.scale);
         // tail
         stroke(0);
         fill(255, 90, 90);  // light red
@@ -90,7 +116,7 @@ class fish1Obj {
         // mouth
         noFill();
         curve(this.x+155, this.y-15, this.x+153, this.y+2, this.x+140, this.y+2, this.x+145, this.y-20);
-      
+        pop();
     }
 }
 
@@ -106,23 +132,34 @@ class fish2Obj {
         this.itTail2 = 0;
         this.currFrame = frameCount;
         this.i = 0;
+        this.yDir = random(-0.3, 0.3);
     }
 
     move() {
         this.x += 0.4;
+        this.y += this.yDir;
         for (var i = 0; i < this.body.length; i++) {
             this.body[i].x += 0.4;
+            this.body[i].y += this.yDir;
         }
         for (var i = 0; i < this.tail1.length; i++) {
             this.tail1[i].x += 0.4;
+            this.tail1[i].y += this.yDir;
         }
         for (var i = 0; i < this.tail2.length; i++) {
             this.tail2[i].x += 0.4;
+            this.tail2[i].y += this.yDir;
         } 
+
+        /* if (this.y <= 50 || this.y >= 350) {
+            this.yDir = -this.yDir;
+        } */
     }
 
     draw() {
         this.move();
+        push();
+        scale(0.2); 
         // tail
         stroke(0);
         fill(255, 120, 0);  // orange
@@ -188,7 +225,7 @@ class fish2Obj {
         // mouth
         noFill();
         curve(this.x+135, this.y-15, this.x+133, this.y+2, this.x+120, this.y+2, this.x+125, this.y-20);
-      
+        pop();
     }
 } 
 
@@ -200,17 +237,22 @@ class fish3Obj {
         this.itBody = 0;
         this.currFrame = frameCount;
         this.i = 0;
+        this.yDir = random(-0.2, 0.2);
     }
 
     move() {
         this.x += 0.5;
+        this.y += this.yDir;
         for (var i = 0; i < this.body.length; i++) {
             this.body[i].x += 0.5;
+            this.body[i].y += this.yDir;
         }
     }
 
     draw() {
         this.move();
+        push();
+        scale(0.2);
         // tail
         stroke(0);
         strokeWeight(2);
@@ -262,7 +304,7 @@ class fish3Obj {
         // mouth
         noFill();
         curve(this.x+105, this.y-5, this.x+103, this.y+12, this.x+90, this.y+12, this.x+95, this.y-10);
-      
+        pop();
     }
 } 
 

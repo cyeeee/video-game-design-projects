@@ -106,4 +106,47 @@ class aquariumObj {
           this.xCor += 5;
       }
     }
+}
+
+//bubbles
+var particleObj = function (x, y) {
+  this.position = new p5.Vector(x, y);
+  this.velocity = new p5.Vector(random(-0.5, 0.5), random(-1.3, -1.5));
+  this.size = random(4, 6);
+  this.position.y--;
+};
+
+var bubbleObj = function (x, y) {
+  this.x = x;
+  this.y = y;
+  this.particles = [];
+};
+
+particleObj.prototype.move = function () {
+  this.velocity.add(upForce);
+  this.position.add(this.velocity);
+  this.size += 0.05;
+};
+
+particleObj.prototype.draw = function () {
+  stroke(130, 200, 200);
+  fill(210, 255, 255);
+  circle(this.position.x, this.position.y, this.size);
+};
+
+
+bubbleObj.prototype.execute = function () {
+  if (this.particles.length < 30) {
+    this.particles.push(new particleObj(this.x, this.y));
   }
+  for (var i = 0; i < this.particles.length; i++) {
+    if (this.particles[i].position.y > 0) {
+      this.particles[i].draw();
+      this.particles[i].move();
+    } 
+    else {
+      this.particles.splice(i, 1);
+    }
+  }
+};
+
