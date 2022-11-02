@@ -17,7 +17,7 @@ The canvas size is 400x400. Using the tilemap shown below, where each tile is 20
 
 The tilemap is given below:
 
-'''sh
+```sh
 wwwwwwwwwww-w-wwwwww
 w++++E++p+--w+++-++w
 w-wwwww+www-wwwwww+w
@@ -38,5 +38,5 @@ wwwww+++wwwww--w+++w
 w-wwwww-w-wwwwwwww-w
 wE++++++++++-++++++w
 wwwwwwwwwww-w-wwwwww
-'''
+```
  
