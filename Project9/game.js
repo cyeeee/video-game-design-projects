@@ -31,7 +31,7 @@ class mainCharObj {
             this.pos.x += this.speed;
           }
           break;
-        case 2: //fight
+        case 2: //right
           this.pos.x += this.speed;
             if (this.collide() === 1) {
               this.pos.x -= this.speed;
@@ -111,9 +111,15 @@ class gameObj {
         this.freezePowers = [];
         this.score = 0;
         this.freeze = 0;
+        this.end = 0;
     }
 
     initialize() {
+        this.end = 0;
+        this.score = 0;
+        this.wall = [];
+        this.pellets = [];
+        this.freezePowers = [];
         for (var i = 0; i < this.tilemap.length; i++) {
             for (var j = 0; j < this.tilemap[i].length; j++) {
                 switch (this.tilemap[i][j]) {
@@ -156,8 +162,8 @@ class gameObj {
         }
         mainChar.draw();
     }
-
 }
+
 
 class wallObj {
     constructor(x, y) {
