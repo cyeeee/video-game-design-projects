@@ -5,29 +5,9 @@ Date: 11/02/22
 
 */
 
-class mainCharObj {
-  constructor(x, y) {
-    this.pos = new p5.Vector(x, y);
-  }
-
-  draw() {
-    image(main, this.pos.x, this.pos.y, 20, 20);
-  }
-}
-
 var mainChar;
 var enemys = [];
 var game;
-
-class enemyObj {
-  constructor(x, y) {
-    this.pos = new p5.Vector(x, y);
-  }
-
-  draw() {
-    image(enemy, this.pos.x, this.pos.y, 20, 20);
-  }
-}
 
 function setup() {
   createCanvas(400, 400);
@@ -40,5 +20,21 @@ function setup() {
 function draw() {
   background(215, 230, 215);
 
-  game.drawBackground();
+  //  the player wins when all pellets are gone
+  if (game.score === game.pellets.length) { 
+    fill(0);
+    textStyle(BOLD);
+    textFont('Courier New', 40);
+    text("YOU WIN!", 100, 200);
+  }
+
+  else {
+    game.drawBackground();
+
+    // always display the number of pellets in the game screen
+    fill(255);
+    text(20);
+    text("Pellets:  " + game.score + " / " + game.pellets.length, 300, 13);  
+  }
+
 }
