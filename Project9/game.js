@@ -122,48 +122,57 @@ class gameObj {
         this.freezePowers = [];
         for (var i = 0; i < this.tilemap.length; i++) {
             for (var j = 0; j < this.tilemap[i].length; j++) {
-                switch (this.tilemap[i][j]) {
-                    case 'w': 
-                        this.wall.push(new wallObj(j*20, i*20));
-                        break;
-                    case '+': 
-                        this.pellets.push(new pelletObj(j*20, i*20));
-                        break;
-                    case 'p': 
-                        this.freezePowers.push(new freezePowerObj(j*20, i*20));
-                        break;
-                    case 'E': 
-                        enemys.push(new enemyObj(j*20, i*20));
-                        break;
-                    case 'M': 
-                        mainChar = new mainCharObj(j*20, i*20);
-                        break;
-                }
+              if (this.tilemap[i][j] === 'w') {
+                graph[i][j] = -1;
+              }
+              else {
+                graph[i][j] = 0;
+              }
+              switch (this.tilemap[i][j]) {
+                case 'w': 
+                  this.wall.push(new wallObj(j*20, i*20));
+                  break;
+                case '+': 
+                  this.pellets.push(new pelletObj(j*20, i*20));
+                  break;
+                case 'p': 
+                  this.freezePowers.push(new freezePowerObj(j*20, i*20));
+                  break;
+                case 'E': 
+                  enemys.push(new enemyObj(j*20, i*20));
+                  break;
+                case 'M': 
+                  mainChar = new mainCharObj(j*20, i*20);
+                  break;
+              }
             }
         }
     }
 
-    drawBackground() {
-        for (var i = 0; i < this.wall.length; i++) {
-            this.wall[i].draw();
-        }
-        for (var i = 0; i < this.pellets.length; i++) {
-            if (this.pellets[i].collected === 0) {
-                this.pellets[i].draw();
-            }
-        }
-        for (var i = 0; i < this.freezePowers.length; i++) {
-            if (this.freezePowers[i].collected === 0) {
-                this.freezePowers[i].draw();
-            }
-        }
-        for (var i = 0; i < enemys.length; i++) {
-            enemys[i].draw();
-        }
-        mainChar.draw();
+    draw() {
+      // freeze for 5 seconds
+      if (this.freeze === 1 && frameCount === freezeFrame+300) {
+          this.freeze = 0;
+      }
+      for (var i = 0; i < this.wall.length; i++) {
+          this.wall[i].draw();
+      }
+      for (var i = 0; i < this.pellets.length; i++) {
+          if (this.pellets[i].collected === 0) {
+              this.pellets[i].draw();
+          }
+      }
+      for (var i = 0; i < this.freezePowers.length; i++) {
+          if (this.freezePowers[i].collected === 0) {
+              this.freezePowers[i].draw();
+          }
+      }
+      mainChar.draw();
+      for (var i = 0; i < enemys.length; i++) {
+          enemys[i].draw();
+      }
     }
 }
-
 
 class wallObj {
     constructor(x, y) {
@@ -198,6 +207,8 @@ class pelletObj {
     }
 }
 
+var freezeFrame;
+
 class freezePowerObj {
     constructor(x, y) {
         this.pos = new p5.Vector(x, y);
@@ -219,6 +230,7 @@ class freezePowerObj {
         if (dist(mainChar.pos.x, mainChar.pos.y, this.pos.x, this.pos.y) < 10) {
             this.collected = 1;
             game.freeze = 1;
+            freezeFrame = frameCount;
         }
     }
 }
