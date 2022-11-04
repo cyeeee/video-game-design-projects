@@ -104,6 +104,9 @@ class enemyObj {
       }
       else {
         image(enemy, this.pos.x, this.pos.y, 20, 20);
+        if (frameCount % 30 === 0) {
+          this.findPath();
+        }
         this.chase();
       }
     }
@@ -122,8 +125,7 @@ class enemyObj {
     }
 
     chase() {
-      //this.findPath();
-      if (dist(this.target.x, this.target.y, this.pos.x, this.pos.y) > 10) {
+      if (dist(this.target.x, this.target.y, this.pos.x, this.pos.y) > 5) {
         this.step.set(this.target.x - this.pos.x, this.target.y - this.pos.y);
         this.step.normalize();
         this.pos.add(this.step);
@@ -160,9 +162,9 @@ class enemyObj {
       this.pathLen = 0;
       findAStarPath(i, j, this.qLen, this.inq, this.q, this.pathLen, this.qStart, 
                           this.comefrom, this.cost, this.pathFound, this.path);
-      this.pathLen--;
+      /* this.pathLen--;
       this.target.x = this.path[this.pathLen].x;
-      this.target.y = this.path[this.pathLen].y;
+      this.target.y = this.path[this.pathLen].y; */
     }
 }
 

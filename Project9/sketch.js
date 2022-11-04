@@ -60,6 +60,7 @@ function draw() {
   // restart the game
   if (initialize === 1) {
     initialize = 0;
+    enemys = [];
     game.initialize();
   }
 
