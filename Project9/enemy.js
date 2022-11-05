@@ -67,7 +67,7 @@ class enemyObj {
         this.pos.add(this.step); 
       }
       else {
-        if (this.finalDest.x === this.target.x && this.finalDest.y === this.target.y) {
+        if (mainChar.pos.x === this.target.x && mainChar.pos.y === this.target.y) {
           game.end = 1;
         } 
         else {
