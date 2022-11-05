@@ -112,10 +112,12 @@ class gameObj {
         this.score = 0;
         this.freeze = 0;
         this.end = 0;
-        this.enemyFrames = [7, 14, 21, 28, 35, 42];
+        this.start = 0;
+        this.enemyFrames = [5, 10, 15, 20, 25, 30];
     }
 
     initialize() {
+        this.start = 1;
         this.end = 0;
         this.score = 0;
         this.wall = [];
@@ -170,11 +172,12 @@ class gameObj {
       }
       mainChar.draw();
       for (var i = 0; i < enemys.length; i++) {
-          if ((frameCount+this.enemyFrames[i]) % 40 === 0) {
+          if (this.start === 1 || (frameCount-this.enemyFrames[i]) % 40 === 0) {
             enemys[i].findPath();
           }
           enemys[i].draw();
       }
+      this.start = 0;
     }
 }
 

@@ -217,7 +217,7 @@ class enemyObj {
       this.comefrom[a][b].set(i, j);
       this.q[this.qLen].set(a, b);
       this.cost[a][b] = this.cost[i][j]+10;
-      this.q[this.qLen].fcost = this.cost[a][b] + dist(b*20+10, a*20+10, this.finalDest.x+10, this.finalDest.y+10);
+      this.q[this.qLen].fcost = this.cost[a][b] + dist(b*20+10, a*20+10, this.finalDest.x, this.finalDest.y);
       this.qLen++;
     }
   

@@ -3,6 +3,21 @@ Project 9 - Chasing in a maze
 Author: Chenyi Wang
 Date: 11/02/22
 
+The tilemap in this project follows the instruction on canvas.
+There are 5 types of character in the map: wall, pellet, freeze power, main character, and enemy
+
+The main character is controlled with WASD, and the speed is 1.2 pixels per frame
+when the player touches a pellet, the pellet disappear
+- The player wins when all pellets are gone.
+When the player touches a freeze power, the freeze power disapper and all the enemies freeze for 5 sec.
+
+The enemy characters will chase the player at all times.
+Each NPC will compute its path using A* search every 40 frames.
+Each NPC compute the path in different frames.
+- When any enemy character catches the player, the game is over.
+
+When the game ends, click anywhere on the screen to play again (all the characters intact at the original positions)
+
 */
 
 var mainChar;
