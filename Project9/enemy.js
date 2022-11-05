@@ -60,78 +60,29 @@ class enemyObj {
       }
     }
 
-    collide() {
-      var c = 0;
-      /* this.step.set(target.x - this.pos.x, target.y - this.pos.y);
-      this.step.normalize();
-      var ahead = p5.Vector.add(this.pos, this.step); */
-      for (var i = 0; i < game.wall.length; i++) {
-        if (dist(this.pos.x+10, this.pos.y+10, game.wall[i].pos.x+10, game.wall[i].pos.y+10) < 20) {
-          c = 1;
-          /* this.target.x = this.pos.x - 20;
-          this.target.y = this.pos.y - 20; */
-        }
-      }
-      return c;
-    }
-
     chase() {
-      /* if (this.collide() === 1) {
-        this.findPath();
+      if (dist(this.target.x, this.target.y, this.pos.x, this.pos.y) > 2) {
+        this.step.set(this.target.x - this.pos.x, this.target.y - this.pos.y);
+        this.step.normalize();
+        this.pos.add(this.step); 
       }
-      else */ {
-        if (dist(this.target.x, this.target.y, this.pos.x, this.pos.y) > 5) {
-          this.step.set(this.target.x - this.pos.x, this.target.y - this.pos.y);
-          this.step.normalize();
-          this.pos.add(this.step); 
-          /* if (this.step.x > 0) { this.direction = 1; }
-          else {this.direction = 2; }
-
-          switch (this.direction) {
-            case 1: //right
-              this.pos.x += this.speed;
-              if (this.collide() === 1) {
-                this.pos.x -= this.speed;
-              }
-              break;
-            case 2: //left
-              this.pos.x -= this.speed;
-              if (this.collide() === 1) {
-                this.pos.x += this.speed;
-              }
-              break;
-            case 3: //down
-              this.pos.y += this.speed;
-              if (this.collide() === 1) {
-                this.pos.y -= this.speed;
-              }
-              break;
-            case 4: //up
-              this.pos.y -= this.speed;
-              if (this.collide() === 1) {
-                this.pos.y += this.speed;
-              }
-              break;
-          } */
-        }
+      else {
+        if (this.finalDest.x === this.target.x && this.finalDest.y === this.target.y) {
+          game.end = 1;
+        } 
         else {
-          if (this.finalDest.x === this.target.x && this.finalDest.y === this.target.y) {
-            game.end = 1;
-          } 
+          this.pathLen--;
+          if (this.pathLen > 0) {
+            this.target.x = this.path[this.pathLen].x;
+            this.target.y = this.path[this.pathLen].y;
+          }
           else {
-            this.pathLen--;
-            if (this.pathLen > 0) {
-              this.target.x = this.path[this.pathLen].x;
-              this.target.y = this.path[this.pathLen].y;
-            }
-            else {
-              this.target.x = this.finalDest.x;
-              this.target.y = this.finalDest.y;
-            }
+            this.target.x = this.finalDest.x;
+            this.target.y = this.finalDest.y;
           }
         }
       }
-
+    
       if (this.pos.x > 420) {
         this.pos.x = -20;
       }
@@ -231,7 +182,7 @@ class enemyObj {
       while (i !== x || j !== y) {
         a = this.comefrom[i][j].x;
         b = this.comefrom[i][j].y;
-        this.path[this.pathLen].set(b * 20 + 10, a * 20 + 10);
+        this.path[this.pathLen].set(b*20+10, a*20+10);
         this.pathLen++;
         i = a;
         j = b;
