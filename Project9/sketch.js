@@ -8,7 +8,7 @@ Date: 11/02/22
 var mainChar;
 var enemys = [];
 var game;
-var graph = [];
+var ggraph = [];
 var initialize = 1;
 
 function mouseClicked() {
@@ -22,33 +22,10 @@ function setup() {
   angleMode(RADIANS);
   customChar();
 
-  graph = new Array(20);
+  ggraph = new Array(20);
   for (var i = 0; i < 20; i++) {
-    graph[i] = new Array(20);
+    ggraph[i] = new Array(20);
   }
-
-  /* graph = new Array(20);
-  cost = new Array(20);
-  inq = new Array(20);
-  comefrom = new Array(20);
-  for (var i = 0; i < 20; i++) {
-    graph[i] = new Array(20);
-    cost[i] = new Array(20);
-    inq[i] = new Array(20);
-    comefrom[i] = new Array(20);
-  }
-  for (i = 0; i < 400; i++) {
-    path.push(new p5.Vector(0, 0));
-    q.push(new qObj(0, 0));
-  }
-  for (i = 0; i < 20; i++) {
-    for (var j = 0; j < 20; j++) {
-      comefrom[i][j] = new p5.Vector(0, 0);
-    }
-  }
-  target = new targetObj(0, 0);
-  targetPos = new targetObj(0, 0);
-  finalDest = new targetObj(0, 0); */
   
   game = new gameObj();
   game.initialize();

@@ -8,7 +8,7 @@ class mainCharObj {
     }
   
     draw() {
-      image(main, this.pos.x, this.pos.y, 20, 20);
+      image(main, this.pos.x-10, this.pos.y-10, 20, 20);
       this.move();
     }
   
@@ -112,6 +112,7 @@ class gameObj {
         this.score = 0;
         this.freeze = 0;
         this.end = 0;
+        this.enemyFrames = [5, 10, 15, 20, 25, 30];
     }
 
     initialize() {
@@ -123,26 +124,26 @@ class gameObj {
         for (var i = 0; i < this.tilemap.length; i++) {
             for (var j = 0; j < this.tilemap[i].length; j++) {
               if (this.tilemap[i][j] === 'w') {
-                graph[i][j] = -1;
+                ggraph[i][j] = -1;
               }
               else {
-                graph[i][j] = 0;
+                ggraph[i][j] = 0;
               }
               switch (this.tilemap[i][j]) {
                 case 'w': 
-                  this.wall.push(new wallObj(j*20, i*20));
+                  this.wall.push(new wallObj(j*20+10, i*20+10));
                   break;
                 case '+': 
-                  this.pellets.push(new pelletObj(j*20, i*20));
+                  this.pellets.push(new pelletObj(j*20+10, i*20+10));
                   break;
                 case 'p': 
-                  this.freezePowers.push(new freezePowerObj(j*20, i*20));
+                  this.freezePowers.push(new freezePowerObj(j*20+10, i*20+10));
                   break;
                 case 'E': 
-                  enemys.push(new enemyObj(j*20, i*20));
+                  enemys.push(new enemyObj(j*20+10, i*20+10));
                   break;
                 case 'M': 
-                  mainChar = new mainCharObj(j*20, i*20);
+                  mainChar = new mainCharObj(j*20+10, i*20+10);
                   break;
               }
             }
@@ -170,6 +171,9 @@ class gameObj {
       mainChar.draw();
       for (var i = 0; i < enemys.length; i++) {
           enemys[i].draw();
+          if ((frameCount+this.enemyFrames[i]) % 30 === 0) {
+            enemys[i].findPath();
+          }
       }
     }
 }
@@ -182,7 +186,7 @@ class wallObj {
     draw() {
         noStroke();
         fill(78); 
-        square(this.pos.x, this.pos.y, 20);
+        square(this.pos.x-10, this.pos.y-10, 20);
     }
 }
 
@@ -196,7 +200,7 @@ class pelletObj {
         this.update();
         noStroke();
         fill(0, 140, 140);
-        circle(this.pos.x+10, this.pos.y+10, 7);
+        circle(this.pos.x, this.pos.y, 7);
     }
 
     update() {
@@ -220,7 +224,7 @@ class freezePowerObj {
         noStroke();
         fill(0, 50, 150);  //blue
         push();
-        translate(this.pos.x+10, this.pos.y+3);
+        translate(this.pos.x, this.pos.y-7);
         rotate(PI/4);
         square(0, 0, 10);
         pop();
