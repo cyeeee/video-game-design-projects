@@ -72,18 +72,20 @@ var createCuboid = function (x, y, z, w, h, d) {
 
 var shape1, shape2, shape3;
 var shapes = [];
+var color1, color2, color3, color4;
 
 var setShapes = function () {
+  // main
   shape1 = createCuboid(-140, -50, -70, 150, 150, 150);
   shape2 = createCuboid(10, 0, -70, 70, 100, 150);
   shape3 = createCuboid(80, 0, -30, 40, 100, 110);
-
+  // loft
   shape4 = createCuboid(-60, -90, -150, 180, 50, 230);
   shape5 = createCuboid(-20, -90, -150, 90, 50, 3);
   shape6 = createCuboid(117, -90, -70, 3, 50, 40);
   shape7 = createCuboid(-60, -40, -150, 180, 40, 120);
   shape8 = createCuboid(10, -40, -30, 140, 40, 140);
- 
+  // roof
   shape9 = createCuboid(-80, -100, -170, 220, 10, 100);
   shape10 = createCuboid(-80, -100, -70, 240, 10, 190);
   shape11 = createCuboid(-70, -105, -160, 200, 5, 90);
@@ -96,7 +98,7 @@ var setShapes = function () {
           shape13, shape14];
 };
 
-var drawEdge = function () {
+var drawEdges = function () {
   var nodes, edges;
   stroke(0);
   for (var shapeNum = 0; shapeNum < shapes.length; shapeNum++) {
@@ -112,12 +114,150 @@ var drawEdge = function () {
   }
 };
 
-// the mouse click toggles between wire-frame mode and colored mode.
+var colorShape = function(c, nodes, faces) {
+  fill(c);
+  for (let i = 0; i < faces.length; i++) {
+    let n0 = nodes[faces[i][0]];
+    let n1 = nodes[faces[i][1]];
+    let n2 = nodes[faces[i][2]];
+    let n3 = nodes[faces[i][3]];
+    if ((n0[2] + n2[2]) / 2 <= 0) {
+      // check z component of the face midpoint;
+      // shading percentage in terms of x component
+      let sp = ((n0[0] + n2[0]) / 2 + 100) / 200;
+      sp = (sp + 1) / 2; // rescale from [0, 1] to [0.5, 1]
+      let r = red(c) * sp;
+      let g = green(c) * sp;
+      let b = blue(c) * sp;
+      fill(r, g, b);
+      quad(n0[0], n0[1], n1[0], n1[1], n2[0], n2[1], n3[0], n3[1]);
+    }
+  }
+};
+
+var colorFaces = function () {
+  var nodes, edges, faces, aVec, bVec, cVec, dir;
+  let shapesCopy = [...shapes];
+  let orderedShapes = [];
+  noStroke();
+  let zs = [];
+  for (let i = 0; i < shapes.length; i++) {
+    nodes = shapes[i].nodes;
+    zs[i] = (nodes[0][2] + nodes[7][2]) / 2;
+  }
+  let index, maxVal;
+  while (zs.length) {
+    index = 0;
+    maxVal = zs[0];
+    for (let i = 1; i < zs.length; i++) {
+      if (zs[i] > maxVal) {
+        index = i;
+        maxVal = zs[i];
+      }
+    }
+    orderedShapes.push(shapesCopy[index]);
+    shapesCopy.splice(index, 1);
+    zs.splice(index, 1);
+  }
+  for (var shapeNum = 0; shapeNum < orderedShapes.length; shapeNum++) {
+    nodes = orderedShapes[shapeNum].nodes;
+    //edges = orderedShapes[shapeNum].edges;
+    faces = orderedShapes[shapeNum].faces;
+
+    switch (orderedShapes[shapeNum]) {
+      case shape1:
+        colorShape(color1, nodes, faces);
+        break;
+      case shape2:
+        colorShape(color4, nodes, faces);
+        break;
+      case shape3:
+        colorShape(color1, nodes, faces);
+        break;
+      case shape4:
+        colorShape(color4, nodes, faces);
+        break;
+      case shape5:
+        colorShape(color1, nodes, faces);
+        break;
+      case shape6:
+        colorShape(color1, nodes, faces);
+        break;
+      case shape7:
+        colorShape(color3, nodes, faces);
+        break;
+      case shape8:
+        colorShape(color3, nodes, faces);
+        break;
+      case shape9:
+        colorShape(color2, nodes, faces);
+        break;
+      case shape10:
+        colorShape(color2, nodes, faces);
+        break;
+      case shape11:
+        colorShape(color2, nodes, faces);
+        break;
+      case shape12:
+        colorShape(color2, nodes, faces);
+        break;
+      case shape13:
+        colorShape(color2, nodes, faces);
+        break;
+      case shape14:
+        colorShape(color2, nodes, faces);
+        break;
+    }
+
+
+    /* for (var f = 0; f < faces.length; f++) {
+      aVec = createVector(
+        nodes[faces[f][0]][0],
+        nodes[faces[f][0]][1],
+        nodes[faces[f][0]][2]
+      );
+      bVec = createVector(
+        nodes[faces[f][1]][0],
+        nodes[faces[f][1]][1],
+        nodes[faces[f][1]][2]
+      );
+      cVec = createVector(
+        nodes[faces[f][2]][0],
+        nodes[faces[f][2]][1],
+        nodes[faces[f][2]][2]
+      );
+      dir = p5.Vector.cross(
+        p5.Vector.sub(cVec, aVec),
+        p5.Vector.sub(bVec, aVec)
+      );
+      if (dir.z > 0 && (shapeNum != 1 || f > 1)) {
+        fill([
+          (f % 2) * 255,
+          (round(f / 2) % 2) * 255,
+          (round(f / 4) % 2) * 255,
+        ]);
+        beginShape();
+        for (let i = 0; i < faces[f].length; i++) {
+          let point = nodes[faces[f][i]];
+          vertex(point[0], point[1]);
+        }
+        endShape();
+      }
+    } */
+
+  }
+}
+
+// the mouse click toggles between wire-frame mode and face-colored mode.
 
 function setup() {
   createCanvas(400, 400);
   angleMode(DEGREES);
   setShapes();
+  color1 = color(130, 40, 0); // brown (main)
+  color2 = color(100, 0, 0);  // dark red (roof)
+  color3 = color(245, 245, 220); // beige (loft)
+  color4 = color(220, 245, 245); // light blue (windows)
 }
 
 function draw() {
@@ -125,6 +265,7 @@ function draw() {
 
   push();
   translate(200, 200);
-  drawEdge();
+  //drawEdges();
+  colorFaces();
   pop();
 }
