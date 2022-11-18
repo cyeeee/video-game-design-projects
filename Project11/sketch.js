@@ -3,7 +3,10 @@ Project 11 - 3D
 Author: Chenyi Wang
 Date: 11/17/2022
 
-
+This project modeled a building that looks like the figure on canvas page.
+The building can be shown as a wire-frame or with faces colored.
+Two modes can be toggles by clicking the mouse.
+The view can be rotated by dragging the mouse.
 */
 
 // Rotate shape around the z-axis
@@ -72,7 +75,6 @@ var createCuboid = function (x, y, z, w, h, d) {
 
 var shape1, shape2, shape3;
 var shapes = [];
-var color1, color2, color3, color4;
 
 var setShapes = function () {
   // main
@@ -89,7 +91,7 @@ var setShapes = function () {
   shape20 = createCuboid(117, -90, 0, 3, 50, 110);
   shape21 = createCuboid(10, -90, 107, 110, 50, 3);
   shape7 = createCuboid(-60, -40, -120, 180, 40, 120);
-  shape8 = createCuboid(10, -40, 0, 140, 40, 140);
+  shape8 = createCuboid(10, -25, 0, 140, 25, 140);
   shape15 = createCuboid(120, -40, 0, 30, 15, 140);
   shape19 = createCuboid(10, -40, 110, 110, 15, 30);
   // roof
@@ -106,6 +108,76 @@ var setShapes = function () {
           shape18, shape19, shape20, shape21];
 };
 
+var fillColor = function(shape) {
+  var c = color(0, 0, 0);
+  switch (shape) {
+    case shape1:
+      c = color1;
+      break;
+    case shape2:
+      c = color4;
+      break;
+    case shape3:
+      c = color1;
+      break;
+    case shape4:
+      c = color3;
+      break;
+    case shape5:
+      c = color1;
+      break;
+    case shape6:
+      c = color4;
+      break; 
+    case shape7:
+      c = color3;
+      break;
+    case shape8:
+      c = color3;
+      break;
+    case shape9:
+      c = color2;
+      break;
+    case shape10:
+      c = color2;
+      break;
+    case shape11:
+      c = color2;
+      break;
+    case shape12:
+      c = color2;
+      break;
+    case shape13:
+      c = color2;
+      break;
+    case shape14:
+      c = color2;
+      break;
+    case shape15:
+      c = color5;
+      break;
+    case shape16:
+      c = color4;
+      break; 
+    case shape17:
+      c = color4;
+      break;
+    case shape18:
+      c = color1;
+      break;
+    case shape19:
+      c = color5;
+      break;
+    case shape20:
+      c = color4;
+      break; 
+    case shape21:
+      c = color4;
+      break;  
+  }
+  return c;
+};
+
 var drawEdges = function () {
   var nodes, edges;
   stroke(0);
@@ -119,95 +191,6 @@ var drawEdges = function () {
       var node1 = nodes[n1];
       line(node0[0], node0[1], node1[0], node1[1]);
     }
-  }
-};
-
-var colorShape = function(c, nodes, faces) {
-  fill(c);
-  for (let i = 0; i < faces.length; i++) {
-    let n0 = nodes[faces[i][0]];
-    let n1 = nodes[faces[i][1]];
-    let n2 = nodes[faces[i][2]];
-    let n3 = nodes[faces[i][3]];
-    if ((n0[2] + n2[2]) / 2 <= 0) {
-      // check z component of the face midpoint;
-      // shading percentage in terms of x component
-      let sp = ((n0[0] + n2[0]) / 2 + 100) / 200;
-      sp = (sp + 1) / 2; // rescale from [0, 1] to [0.5, 1]
-      let r = red(c) * sp;
-      let g = green(c) * sp;
-      let b = blue(c) * sp;
-      fill(r, g, b);
-      quad(n0[0], n0[1], n1[0], n1[1], n2[0], n2[1], n3[0], n3[1]);
-    }
-  }
-};
-
-var fillColor = function(shape) {
-  switch (shape) {
-    case shape1:
-      fill(color1);
-      break;
-    case shape2:
-      fill(color4);
-      break;
-    case shape3:
-      fill(color1);
-      break;
-    case shape4:
-      fill(color3);
-      break;
-    case shape5:
-      fill(color1);
-      break;
-    case shape6:
-      fill(color4);
-      break; 
-    case shape7:
-      fill(color3);
-      break;
-    case shape8:
-      fill(color3);
-      break;
-    case shape9:
-      fill(color2);
-      break;
-    case shape10:
-      fill(color2);
-      break;
-    case shape11:
-      fill(color2);
-      break;
-    case shape12:
-      fill(color2);
-      break;
-    case shape13:
-      fill(color2);
-      break;
-    case shape14:
-      fill(color2);
-      break;
-    case shape15:
-      fill(80);
-      break;
-    case shape16:
-      fill(color4);
-      break; 
-    case shape17:
-      fill(color4);
-      break;
-    case shape18:
-      fill(color1);
-      break;
-    case shape19:
-      fill(80);
-      break;
-    case shape20:
-      fill(color4);
-      break; 
-    case shape21:
-      fill(color4);
-      break;  
   }
 };
 
@@ -239,6 +222,8 @@ var colorFaces = function () {
     nodes = orderedShapes[shapeNum].nodes;
     faces = orderedShapes[shapeNum].faces;
 
+    var faceColor = fillColor(orderedShapes[shapeNum]);
+    fill(faceColor);
     for (var f = 0; f < faces.length; f++) {
       aVec = createVector(
         nodes[faces[f][0]][0],
@@ -259,13 +244,21 @@ var colorFaces = function () {
         p5.Vector.sub(cVec, aVec),
         p5.Vector.sub(bVec, aVec)
       );
+
+      let n0 = nodes[faces[f][0]];
+      let n1 = nodes[faces[f][1]];
+      let n2 = nodes[faces[f][2]];
+      let n3 = nodes[faces[f][3]];
+
       if (dir.z > 0 && (shapeNum != 1 || f > 1)) {
-        /* fill([
-          (f % 2) * 255,
-          (round(f/2) % 2) * 255,
-          (round(f/4) % 2) * 255,
-        ]); */
-        fillColor(orderedShapes[shapeNum]);
+
+        let sp = ((n0[0] + n2[0]) / 2 + 100) / 200;
+        sp = (sp + 1) / 2; // rescale from [0, 1] to [0.5, 1]
+        let r = red(faceColor) * sp;
+        let g = green(faceColor) * sp;
+        let b = blue(faceColor) * sp;
+        fill(r, g, b);
+
         beginShape();
         for (let i = 0; i < faces[f].length; i++) {
           let point = nodes[faces[f][i]];
@@ -274,6 +267,7 @@ var colorFaces = function () {
         endShape();
       }
     }
+    
   }
 }
 
@@ -288,6 +282,8 @@ mouseClicked = function () {
   }
 };
 
+var color1, color2, color3, color4, color5;
+
 function setup() {
   createCanvas(400, 400);
   angleMode(DEGREES);
@@ -296,6 +292,7 @@ function setup() {
   color2 = color(100, 0, 0);  // dark red (roof)
   color3 = color(230, 230, 200); // beige (loft)
   color4 = color(220, 245, 245); // light blue (windows)
+  color5 = color(80, 80, 80);  // grey
 }
 
 function draw() {
