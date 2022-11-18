@@ -249,6 +249,15 @@ var colorFaces = function () {
 }
 
 // the mouse click toggles between wire-frame mode and face-colored mode.
+var mode = 0;
+mouseClicked = function () {
+  if (mode === 0) {
+    mode = 1;
+  }
+  else{
+    mode = 0;
+  }
+};
 
 function setup() {
   createCanvas(400, 400);
@@ -265,7 +274,11 @@ function draw() {
 
   push();
   translate(200, 200);
-  //drawEdges();
-  colorFaces();
+  if (mode === 0) {
+    drawEdges();
+  }
+  else {
+    colorFaces();
+  }
   pop();
 }
