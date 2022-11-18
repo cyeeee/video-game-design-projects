@@ -82,30 +82,28 @@ var setShapes = function () {
   shape2 = createCuboid(10, 0, -40, 70, 100, 150);
   shape3 = createCuboid(80, 0, 0, 40, 100, 110);
   shape18 = createCuboid(10, 97, -40, 70, 3, 150);
+  shape10 = createCuboid(117, 0, 30, 3, 100, 50);
   // loft
   shape4 = createCuboid(-60, -90, -120, 180, 50, 230);
   shape5 = createCuboid(-20, -90, -120, 90, 50, 3);
   shape6 = createCuboid(-60, -90, -120, 40, 50, 3);
   shape16 = createCuboid(70, -90, -120, 50, 50, 3);
   shape17 = createCuboid(117, -90, -120, 3, 50, 80);
-  shape20 = createCuboid(117, -90, 0, 3, 50, 110);
-  shape21 = createCuboid(10, -90, 107, 110, 50, 3);
+  shape20 = createCuboid(117, -90, 20, 3, 50, 90);
+  shape21 = createCuboid(30, -90, 107, 90, 50, 3);
   shape7 = createCuboid(-60, -40, -120, 180, 40, 120);
   shape8 = createCuboid(10, -25, 0, 140, 25, 140);
   shape15 = createCuboid(120, -40, 0, 30, 15, 140);
   shape19 = createCuboid(10, -40, 110, 110, 15, 30);
   // roof
-  shape9 = createCuboid(-80, -100, -140, 220, 10, 290);
-  shape10 = createCuboid(-80, -100, -40, 240, 10, 190);
-  shape11 = createCuboid(-70, -105, -130, 200, 5, 270);
-  shape12 = createCuboid(-70, -105, -40, 220, 5, 180);
+  shape9 = createCuboid(-80, -100, -140, 240, 10, 290);
+  shape11 = createCuboid(-70, -105, -130, 220, 5, 270);
   shape13 = createCuboid(-160, -50, -60, 100, 10, 190);
   shape14 = createCuboid(-150, -55, -50, 90, 5, 170);
 
-  shapes = [shape1, shape2, shape3, shape4, shape5, shape6, 
-          shape7, shape8, shape9, shape10, shape11, shape12, 
-          shape13, shape14, shape15, shape16, shape17, 
-          shape18, shape19, shape20, shape21];
+  shapes = [shape1, shape2, shape3, shape4, shape5, shape6, shape7, 
+          shape8, shape9, shape10, shape11, shape13, shape14, shape15, 
+          shape16, shape17, shape18, shape19, shape20, shape21];
 };
 
 var fillColor = function(shape) {
@@ -139,12 +137,9 @@ var fillColor = function(shape) {
       c = color2;
       break;
     case shape10:
-      c = color2;
+      c = color4;
       break;
     case shape11:
-      c = color2;
-      break;
-    case shape12:
       c = color2;
       break;
     case shape13:
@@ -198,7 +193,6 @@ var colorFaces = function () {
   var nodes, faces, aVec, bVec, cVec, dir;
   let shapesCopy = [...shapes];
   let orderedShapes = [];
-  noStroke();
   let mid = [];
   for (let i = 0; i < shapes.length; i++) {
     nodes = shapes[i].nodes;
@@ -246,9 +240,7 @@ var colorFaces = function () {
       );
 
       let n0 = nodes[faces[f][0]];
-      let n1 = nodes[faces[f][1]];
       let n2 = nodes[faces[f][2]];
-      let n3 = nodes[faces[f][3]];
 
       if (dir.z > 0 && (shapeNum != 1 || f > 1)) {
 
