@@ -76,31 +76,34 @@ var color1, color2, color3, color4;
 
 var setShapes = function () {
   // main
-  shape1 = createCuboid(-140, -50, -70, 150, 150, 150);
-  shape2 = createCuboid(10, 0, -70, 70, 100, 150);
-  shape3 = createCuboid(80, 0, -30, 40, 100, 110);
-  shape18 = createCuboid(10, 97, -70, 70, 3, 150);
+  shape1 = createCuboid(-140, -40, -40, 150, 140, 150);
+  shape2 = createCuboid(10, 0, -40, 70, 100, 150);
+  shape3 = createCuboid(80, 0, 0, 40, 100, 110);
+  shape18 = createCuboid(10, 97, -40, 70, 3, 150);
   // loft
-  shape4 = createCuboid(-60, -90, -150, 180, 50, 230);
-  shape5 = createCuboid(-20, -90, -150, 90, 50, 3);
-  shape6 = createCuboid(117, -90, -70, 3, 50, 40);
-  shape16 = createCuboid(-60, -90, -150, 3, 50, 230);
-  shape17 = createCuboid(-60, -90, 77, 70, 50, 3);
-  shape7 = createCuboid(-60, -40, -150, 180, 40, 120);
-  shape8 = createCuboid(10, -40, -30, 140, 40, 140);
-  shape15 = createCuboid(120, -40, -30, 30, 15, 140);
-  shape19 = createCuboid(10, -40, 80, 110, 15, 30);
+  shape4 = createCuboid(-60, -90, -120, 180, 50, 230);
+  shape5 = createCuboid(-20, -90, -120, 90, 50, 3);
+  shape6 = createCuboid(-60, -90, -120, 40, 50, 3);
+  shape16 = createCuboid(70, -90, -120, 50, 50, 3);
+  shape17 = createCuboid(117, -90, -120, 3, 50, 80);
+  shape20 = createCuboid(117, -90, 0, 3, 50, 110);
+  shape21 = createCuboid(10, -90, 107, 110, 50, 3);
+  shape7 = createCuboid(-60, -40, -120, 180, 40, 120);
+  shape8 = createCuboid(10, -40, 0, 140, 40, 140);
+  shape15 = createCuboid(120, -40, 0, 30, 15, 140);
+  shape19 = createCuboid(10, -40, 110, 110, 15, 30);
   // roof
-  shape9 = createCuboid(-80, -100, -170, 220, 10, 100);
-  shape10 = createCuboid(-80, -100, -70, 240, 10, 190);
-  shape11 = createCuboid(-70, -105, -160, 200, 5, 90);
-  shape12 = createCuboid(-70, -105, -70, 220, 5, 180);
-  shape13 = createCuboid(-160, -60, -90, 100, 10, 190);
-  shape14 = createCuboid(-150, -65, -80, 90, 5, 170);
+  shape9 = createCuboid(-80, -100, -140, 220, 10, 290);
+  shape10 = createCuboid(-80, -100, -40, 240, 10, 190);
+  shape11 = createCuboid(-70, -105, -130, 200, 5, 270);
+  shape12 = createCuboid(-70, -105, -40, 220, 5, 180);
+  shape13 = createCuboid(-160, -50, -60, 100, 10, 190);
+  shape14 = createCuboid(-150, -55, -50, 90, 5, 170);
 
-  shapes = [shape1, shape2, shape3, shape4, shape5, shape6,
+  shapes = [shape1, shape2, shape3, shape4, shape5, shape6, 
           shape7, shape8, shape9, shape10, shape11, shape12, 
-          shape13, shape14, shape15, shape16, shape17, shape18, shape19];
+          shape13, shape14, shape15, shape16, shape17, 
+          shape18, shape19, shape20, shape21];
 };
 
 var drawEdges = function () {
@@ -137,6 +140,74 @@ var colorShape = function(c, nodes, faces) {
       fill(r, g, b);
       quad(n0[0], n0[1], n1[0], n1[1], n2[0], n2[1], n3[0], n3[1]);
     }
+  }
+};
+
+var fillColor = function(shape) {
+  switch (shape) {
+    case shape1:
+      fill(color1);
+      break;
+    case shape2:
+      fill(color4);
+      break;
+    case shape3:
+      fill(color1);
+      break;
+    case shape4:
+      fill(color3);
+      break;
+    case shape5:
+      fill(color1);
+      break;
+    case shape6:
+      fill(color4);
+      break; 
+    case shape7:
+      fill(color3);
+      break;
+    case shape8:
+      fill(color3);
+      break;
+    case shape9:
+      fill(color2);
+      break;
+    case shape10:
+      fill(color2);
+      break;
+    case shape11:
+      fill(color2);
+      break;
+    case shape12:
+      fill(color2);
+      break;
+    case shape13:
+      fill(color2);
+      break;
+    case shape14:
+      fill(color2);
+      break;
+    case shape15:
+      fill(80);
+      break;
+    case shape16:
+      fill(color4);
+      break; 
+    case shape17:
+      fill(color4);
+      break;
+    case shape18:
+      fill(color1);
+      break;
+    case shape19:
+      fill(80);
+      break;
+    case shape20:
+      fill(color4);
+      break; 
+    case shape21:
+      fill(color4);
+      break;  
   }
 };
 
@@ -194,65 +265,7 @@ var colorFaces = function () {
           (round(f/2) % 2) * 255,
           (round(f/4) % 2) * 255,
         ]); */
-        switch (orderedShapes[shapeNum]) {
-          case shape1:
-            fill(color1);
-            break;
-          case shape2:
-            fill(color4);
-            break;
-          case shape3:
-            fill(color1);
-            break;
-          case shape4:
-            fill(color4);
-            break;
-          case shape5:
-            fill(color1);
-            break;
-          case shape6:
-            fill(color3);
-            break;
-          case shape7:
-            fill(color3);
-            break;
-          case shape8:
-            fill(color3);
-            break;
-          case shape9:
-            fill(color2);
-            break;
-          case shape10:
-            fill(color2);
-            break;
-          case shape11:
-            fill(color2);
-            break;
-          case shape12:
-            fill(color2);
-            break;
-          case shape13:
-            fill(color2);
-            break;
-          case shape14:
-            fill(color2);
-            break;
-          case shape15:
-            fill(80);
-            break;
-          case shape16:
-            fill(color3);
-            break;
-          case shape17:
-            fill(color3);
-            break;
-          case shape18:
-            fill(color1);
-            break;
-          case shape19:
-            fill(80);
-            break;
-        }
+        fillColor(orderedShapes[shapeNum]);
         beginShape();
         for (let i = 0; i < faces[f].length; i++) {
           let point = nodes[faces[f][i]];
