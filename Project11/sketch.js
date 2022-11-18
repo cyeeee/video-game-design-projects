@@ -79,12 +79,17 @@ var setShapes = function () {
   shape1 = createCuboid(-140, -50, -70, 150, 150, 150);
   shape2 = createCuboid(10, 0, -70, 70, 100, 150);
   shape3 = createCuboid(80, 0, -30, 40, 100, 110);
+  shape18 = createCuboid(10, 97, -70, 70, 3, 150);
   // loft
   shape4 = createCuboid(-60, -90, -150, 180, 50, 230);
   shape5 = createCuboid(-20, -90, -150, 90, 50, 3);
   shape6 = createCuboid(117, -90, -70, 3, 50, 40);
+  shape16 = createCuboid(-60, -90, -150, 3, 50, 230);
+  shape17 = createCuboid(-60, -90, 77, 70, 50, 3);
   shape7 = createCuboid(-60, -40, -150, 180, 40, 120);
   shape8 = createCuboid(10, -40, -30, 140, 40, 140);
+  shape15 = createCuboid(120, -40, -30, 30, 15, 140);
+  shape19 = createCuboid(10, -40, 80, 110, 15, 30);
   // roof
   shape9 = createCuboid(-80, -100, -170, 220, 10, 100);
   shape10 = createCuboid(-80, -100, -70, 240, 10, 190);
@@ -95,7 +100,7 @@ var setShapes = function () {
 
   shapes = [shape1, shape2, shape3, shape4, shape5, shape6,
           shape7, shape8, shape9, shape10, shape11, shape12, 
-          shape13, shape14];
+          shape13, shape14, shape15, shape16, shape17, shape18, shape19];
 };
 
 var drawEdges = function () {
@@ -136,81 +141,34 @@ var colorShape = function(c, nodes, faces) {
 };
 
 var colorFaces = function () {
-  var nodes, edges, faces, aVec, bVec, cVec, dir;
+  var nodes, faces, aVec, bVec, cVec, dir;
   let shapesCopy = [...shapes];
   let orderedShapes = [];
   noStroke();
-  let zs = [];
+  let mid = [];
   for (let i = 0; i < shapes.length; i++) {
     nodes = shapes[i].nodes;
-    zs[i] = (nodes[0][2] + nodes[7][2]) / 2;
+    mid[i] = (nodes[0][2] + nodes[7][2]) / 2;
   }
   let index, maxVal;
-  while (zs.length) {
+  while (mid.length) {
     index = 0;
-    maxVal = zs[0];
-    for (let i = 1; i < zs.length; i++) {
-      if (zs[i] > maxVal) {
+    maxVal = mid[0];
+    for (let i = 1; i < mid.length; i++) {
+      if (mid[i] > maxVal) {
         index = i;
-        maxVal = zs[i];
+        maxVal = mid[i];
       }
     }
     orderedShapes.push(shapesCopy[index]);
     shapesCopy.splice(index, 1);
-    zs.splice(index, 1);
+    mid.splice(index, 1);
   }
   for (var shapeNum = 0; shapeNum < orderedShapes.length; shapeNum++) {
     nodes = orderedShapes[shapeNum].nodes;
-    //edges = orderedShapes[shapeNum].edges;
     faces = orderedShapes[shapeNum].faces;
 
-    switch (orderedShapes[shapeNum]) {
-      case shape1:
-        colorShape(color1, nodes, faces);
-        break;
-      case shape2:
-        colorShape(color4, nodes, faces);
-        break;
-      case shape3:
-        colorShape(color1, nodes, faces);
-        break;
-      case shape4:
-        colorShape(color4, nodes, faces);
-        break;
-      case shape5:
-        colorShape(color1, nodes, faces);
-        break;
-      case shape6:
-        colorShape(color1, nodes, faces);
-        break;
-      case shape7:
-        colorShape(color3, nodes, faces);
-        break;
-      case shape8:
-        colorShape(color3, nodes, faces);
-        break;
-      case shape9:
-        colorShape(color2, nodes, faces);
-        break;
-      case shape10:
-        colorShape(color2, nodes, faces);
-        break;
-      case shape11:
-        colorShape(color2, nodes, faces);
-        break;
-      case shape12:
-        colorShape(color2, nodes, faces);
-        break;
-      case shape13:
-        colorShape(color2, nodes, faces);
-        break;
-      case shape14:
-        colorShape(color2, nodes, faces);
-        break;
-    }
-
-
-    /* for (var f = 0; f < faces.length; f++) {
+    for (var f = 0; f < faces.length; f++) {
       aVec = createVector(
         nodes[faces[f][0]][0],
         nodes[faces[f][0]][1],
@@ -231,11 +189,70 @@ var colorFaces = function () {
         p5.Vector.sub(bVec, aVec)
       );
       if (dir.z > 0 && (shapeNum != 1 || f > 1)) {
-        fill([
+        /* fill([
           (f % 2) * 255,
-          (round(f / 2) % 2) * 255,
-          (round(f / 4) % 2) * 255,
-        ]);
+          (round(f/2) % 2) * 255,
+          (round(f/4) % 2) * 255,
+        ]); */
+        switch (orderedShapes[shapeNum]) {
+          case shape1:
+            fill(color1);
+            break;
+          case shape2:
+            fill(color4);
+            break;
+          case shape3:
+            fill(color1);
+            break;
+          case shape4:
+            fill(color4);
+            break;
+          case shape5:
+            fill(color1);
+            break;
+          case shape6:
+            fill(color3);
+            break;
+          case shape7:
+            fill(color3);
+            break;
+          case shape8:
+            fill(color3);
+            break;
+          case shape9:
+            fill(color2);
+            break;
+          case shape10:
+            fill(color2);
+            break;
+          case shape11:
+            fill(color2);
+            break;
+          case shape12:
+            fill(color2);
+            break;
+          case shape13:
+            fill(color2);
+            break;
+          case shape14:
+            fill(color2);
+            break;
+          case shape15:
+            fill(80);
+            break;
+          case shape16:
+            fill(color3);
+            break;
+          case shape17:
+            fill(color3);
+            break;
+          case shape18:
+            fill(color1);
+            break;
+          case shape19:
+            fill(80);
+            break;
+        }
         beginShape();
         for (let i = 0; i < faces[f].length; i++) {
           let point = nodes[faces[f][i]];
@@ -243,8 +260,7 @@ var colorFaces = function () {
         }
         endShape();
       }
-    } */
-
+    }
   }
 }
 
@@ -265,7 +281,7 @@ function setup() {
   setShapes();
   color1 = color(130, 40, 0); // brown (main)
   color2 = color(100, 0, 0);  // dark red (roof)
-  color3 = color(245, 245, 220); // beige (loft)
+  color3 = color(230, 230, 200); // beige (loft)
   color4 = color(220, 245, 245); // light blue (windows)
 }
 
@@ -279,6 +295,6 @@ function draw() {
   }
   else {
     colorFaces();
-  }
+  } 
   pop();
 }
