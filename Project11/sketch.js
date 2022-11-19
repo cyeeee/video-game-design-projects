@@ -89,21 +89,27 @@ var setShapes = function () {
   shape6 = createCuboid(-60, -90, -120, 40, 50, 3);
   shape16 = createCuboid(70, -90, -120, 50, 50, 3);
   shape17 = createCuboid(117, -90, -120, 3, 50, 80);
-  shape20 = createCuboid(117, -90, 20, 3, 50, 90);
-  shape21 = createCuboid(30, -90, 107, 90, 50, 3);
+  shape20 = createCuboid(117, -90, 0, 3, 60, 110);
+  shape21 = createCuboid(10, -90, 107, 110, 60, 3);
   shape7 = createCuboid(-60, -40, -120, 180, 40, 120);
   shape8 = createCuboid(10, -25, 0, 140, 25, 140);
-  shape15 = createCuboid(120, -40, 0, 30, 15, 140);
-  shape19 = createCuboid(10, -40, 110, 110, 15, 30);
+  shape15 = createCuboid(120, -40, 0, 30, 15, 3);
+  shape12 = createCuboid(147, -40, 0, 3, 15, 140);
+  shape19 = createCuboid(10, -40, 110, 3, 15, 30);
+  shape22 = createCuboid(10, -40, 137, 140, 15, 3);
   // roof
-  shape9 = createCuboid(-80, -100, -140, 240, 10, 290);
-  shape11 = createCuboid(-70, -105, -130, 220, 5, 270);
+  shape9 = createCuboid(-80, -100, -140, 220, 10, 140);
+  shape11 = createCuboid(-70, -105, -130, 200, 5, 140);
+  shape23 = createCuboid(-80, -100, 0, 250, 10, 160);
+  shape24 = createCuboid(-70, -105, 10, 230, 5, 140);
   shape13 = createCuboid(-160, -50, -60, 100, 10, 190);
   shape14 = createCuboid(-150, -55, -50, 90, 5, 170);
+  shape25 = createCuboid(-60, -90, -120, 180, 1, 230);
 
-  shapes = [shape1, shape2, shape3, shape4, shape5, shape6, shape7, 
-          shape8, shape9, shape10, shape11, shape13, shape14, shape15, 
-          shape16, shape17, shape18, shape19, shape20, shape21];
+  shapes = [shape1, shape2, shape3, shape4, shape5, shape6, 
+        shape7, shape8, shape9, shape10, shape11, shape12, 
+        shape13, shape14, shape15, shape16, shape17, shape18, 
+        shape19, shape20, shape21, shape22, shape23, shape24, shape25];
 };
 
 var fillColor = function(shape) {
@@ -142,6 +148,9 @@ var fillColor = function(shape) {
     case shape11:
       c = color2;
       break;
+    case shape12:
+      c = color5;
+      break;
     case shape13:
       c = color2;
       break;
@@ -169,6 +178,18 @@ var fillColor = function(shape) {
     case shape21:
       c = color4;
       break;  
+    case shape22:
+      c = color5;
+      break;
+    case shape23:
+      c = color2;
+      break;
+    case shape24:
+      c = color2;
+      break;
+    case shape25:
+      c = color2;
+      break;
   }
   return c;
 };
@@ -217,6 +238,7 @@ var colorFaces = function () {
     faces = orderedShapes[shapeNum].faces;
 
     var faceColor = fillColor(orderedShapes[shapeNum]);
+    noStroke();
     fill(faceColor);
     for (var f = 0; f < faces.length; f++) {
       aVec = createVector(
