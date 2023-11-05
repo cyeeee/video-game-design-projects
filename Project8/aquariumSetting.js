@@ -134,7 +134,6 @@ particleObj.prototype.draw = function () {
   circle(this.position.x, this.position.y, this.size);
 };
 
-
 bubbleObj.prototype.execute = function () {
   if (this.particles.length < 30) {
     this.particles.push(new particleObj(this.x, this.y));
